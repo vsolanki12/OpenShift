@@ -63,7 +63,7 @@ if [ $# == 1 ]
   else
     echo -e "\e[1;31mTotal OOM Killer logs\e[0m="$OOM_CHECK
     echo -e "\e[1;31m`journalctl --file $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/var/log/journal/$JOURNAL_DIR/system.journal|grep -Ei "oom-killer|Out of memory"|tail -3`\e[0m"
-    for file in $(ls -1tr $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/var/log/journal/$JOURNAL_DIR/system*.journal); do echo -e "\n$file\n=============================="; journalctl --file $file|grep -Ei "oom-killer|Out of memory"; done > $HOME/$CASE_DIR/$SOS_DIR/OOM_KIller.log
+    for file in $(ls -1tr $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/var/log/journal/$JOURNAL_DIR/system*.journal); do echo -e "\n$file\n=============================="; journalctl --file $file|grep -Ei "oom-killer|Out of memory"; done > $HOME/$CASE_DIR/OOM_KIller.log
     echo -e "\e[1;35mLog File Created at $HOME/$CASE_DIR/OOM_KIller.log\e[0m"
   fi
   echo "=========================================================================================================================================================="$'\n'
