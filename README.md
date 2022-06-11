@@ -2,6 +2,7 @@
 **This Repository containing the must-gather & sos-report analysis & ETCD took too long count check date wise scripts which we can use from the Support Shell.**
 
 **Usage of the Must-Gather script** 
+~~~
 sh new_must_gather.sh <Case-id>
 
 Then it will ask for the Must-Gather input file. 
@@ -9,10 +10,10 @@ Then it will ask for the Must-Gather input file.
 $ sh new_must_gather.sh <Case-id>
 drwxrwxrwx. 3 yank     yank            59 May 12 17:55 0030-must-gather.tar.gz
 drwxrwxrwx. 3 yank     yank            59 May 13 11:19 0050-must-gather.tar.gz
-drwxrwxrwx. 3 yank     yank          4096 May 17 07:10 0070-must-gather_bmworker22.tar.gz
+drwxrwxrwx. 3 yank     yank          4096 May 17 07:10 0070-must-gather.tar.gz
 -rw-rw-rw-. 1 vsolanki vsolanki        95 Jun 11 07:23 Kubelet_Restart_Error.log
 Choose the must-gather from the above output:
-
+~~~
     
 **IMPORTANT FILE** for Cluster Operator check in this Script is --> CO_NS.txt (This File Contains the Cluster Operator and NameSpaces. 
     
@@ -46,14 +47,16 @@ Choose the must-gather from the above output:
 ~~~    
    
 **Usage of the SOS-Report script**
+~~~
 sh sos-report-check.sh <case-id>
 
 Then it will ask for the SOS-Report input file. 
 **EXAMPLE:**  
 $ sh sos-report-check.sh <Case-id>
-drwxrwxrwx. 3 yank     yank            95 Jun 11 07:21 0020-sosreport-bmworker5-2022-05-12-jhmrcxh.tar.xz
-drwxrwxrwx. 3 yank     yank            70 May 17 07:00 0060-sosreport-bmworker22-2022-05-17-vmbhhey.tar.xz
+drwxrwxrwx. 3 yank     yank            95 Jun 11 07:21 0020-sosreport-2022-05-12-jhmrcxh.tar.xz
+drwxrwxrwx. 3 yank     yank            70 May 17 07:00 0060-sosreport-2022-05-17-vmbhhey.tar.xz
 Choose the sos-report from the above output:
+~~~
 
 **Once you choosed the file it will print all the required details of basic checks. What I have included as of the on the script details are below:**
  ~~~
