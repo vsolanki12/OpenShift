@@ -39,9 +39,9 @@ Choose the must-gather from the above output:
     20. ETCD error logs count (Overloaded, took too long, ntp clock difference, failed to send heartbeat, leader change, database exceed, & compaction rate in seconds & milliseconds) for all master.
     21. If you want to check logs for any particular NameSpace.
     22. If you want to check Events for any particular NameSpace. 
- 
+ ~~~
   This Must-Gather Script will help you to fast track some basics sanity checks of must-gather.
-    
+ ~~~
     
    
 **Usage of the SOS-Report script**
@@ -78,5 +78,6 @@ Choose the sos-report from the above output:
     21. Reebot count of node and provide time of last reboot only.
     22. Intentional reboot count of node and provide time of last reboot only.
     23. dmesg file path
-
-    This SOS-report Script will help you to fast track some basics sanity checks from the sos-report.
+~~~
+ This SOS-report Script will help you to fast track some basics sanity checks from the sos-report.
+~~~
