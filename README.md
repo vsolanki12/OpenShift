@@ -14,7 +14,7 @@ drwxrwxrwx. 3 yank     yank          4096 May 17 07:10 0070-must-gather.tar.gz
 -rw-rw-rw-. 1 vsolanki vsolanki        95 Jun 11 07:23 Kubelet_Restart_Error.log
 Choose the must-gather from the above output:
 ~~~
-    
+**IMPORTANT NOTE: This Script is using omg tool in the background.**   
 **IMPORTANT FILE** for Cluster Operator check in this Script is --> **CO_NS.txt** (This File Contains the Cluster Operator and NameSpaces.)
     
 **Once you choosed the file it will print all the required details of basic checks. What I have included as of the on the script details are below:**
