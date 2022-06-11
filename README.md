@@ -45,11 +45,11 @@ Choose the must-gather from the above output:
     
    
 **Usage of the SOS-Report script**
-./sos-report-check.sh <case-id>
+sh sos-report-check.sh <case-id>
 
 Then it will ask for the SOS-Report input file. 
 **EXAMPLE:**  
-$ ./sos-report-check.sh <Case-id>
+$ sh sos-report-check.sh <Case-id>
 drwxrwxrwx. 3 yank     yank            95 Jun 11 07:21 0020-sosreport-bmworker5-2022-05-12-jhmrcxh.tar.xz
 drwxrwxrwx. 3 yank     yank            70 May 17 07:00 0060-sosreport-bmworker22-2022-05-17-vmbhhey.tar.xz
 Choose the sos-report from the above output:
@@ -83,15 +83,15 @@ Choose the sos-report from the above output:
 ~~~
 
 **Usage of the etcd_ttl script**     
-./etcd_ttl.sh <Case-id>
+sh etcd_ttl.sh <Case-id>
 
 It will provide the details of took too long messages count date wise per master from the must-gather logs. 
 **EXAMPLE:**
-$ ./etcd_ttl.sh 03217896
+$ sh etcd_ttl.sh <Case-id>
 drwxrwxrwx. 3 yank     yank           59 May 12 17:55 0030-must-gather.tar.gz
 drwxrwxrwx. 3 yank     yank           59 May 13 11:19 0050-must-gather.tar.gz
-drwxrwxrwx. 3 yank     yank         4096 May 17 07:10 0070-must-gather_bmworker22.tar.gz
-Choose the must-gather from the above output:0070-must-gather_bmworker22.tar.gz
+drwxrwxrwx. 3 yank     yank         4096 May 17 07:10 0070-must-gather.tar.gz
+Choose the must-gather from the above output:0070-must-gather.tar.gz
 ~~~    
 took too long messages date & time wise count etcd-master1.ocp-prd-dor.bell.corp.bce.ca 2022-05-15
 more than 100ms:3373
