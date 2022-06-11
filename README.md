@@ -15,7 +15,7 @@ drwxrwxrwx. 3 yank     yank          4096 May 17 07:10 0070-must-gather.tar.gz
 Choose the must-gather from the above output:
 ~~~
     
-**IMPORTANT FILE** for Cluster Operator check in this Script is --> CO_NS.txt (This File Contains the Cluster Operator and NameSpaces. 
+**IMPORTANT FILE** for Cluster Operator check in this Script is --> **CO_NS.txt** (This File Contains the Cluster Operator and NameSpaces.)
     
 **Once you choosed the file it will print all the required details of basic checks. What I have included as of the on the script details are below:**
 ~~~
@@ -87,7 +87,8 @@ Choose the sos-report from the above output:
  This SOS-report Script will help you to fast track some basics sanity checks from the sos-report.
 ~~~
 
-**Usage of the etcd_ttl script**     
+**Usage of the etcd_ttl script**    
+~~~
 sh etcd_ttl.sh <Case-id>
 
 It will provide the details of took too long messages count date wise per master from the must-gather logs. 
@@ -97,7 +98,7 @@ drwxrwxrwx. 3 yank     yank           59 May 12 17:55 0030-must-gather.tar.gz
 drwxrwxrwx. 3 yank     yank           59 May 13 11:19 0050-must-gather.tar.gz
 drwxrwxrwx. 3 yank     yank         4096 May 17 07:10 0070-must-gather.tar.gz
 Choose the must-gather from the above output:0070-must-gather.tar.gz
-~~~    
+
 took too long messages date & time wise count etcd-master1.ocp-prd-dor.bell.corp.bce.ca 2022-05-15
 more than 100ms:3373
 more than 200ms:1114
