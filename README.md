@@ -17,6 +17,7 @@ Choose the must-gather from the above output:
 **IMPORTANT FILE** for Cluster Operator check in this Script is --> CO_NS.txt (This File Contains the Cluster Operator and NameSpaces. 
     
 **Once you choosed the file it will print all the required details of basic checks. What I have included as of the on the script details are below:**
+~~~
     1. Platform Type
     2. Network Details 
     3. Cluster Version
@@ -38,11 +39,11 @@ Choose the must-gather from the above output:
     19. ETCD DBsize
     20. ETCD error logs count (Overloaded, took too long, ntp clock difference, failed to send heartbeat, leader change, database exceed, & compaction rate in seconds & milliseconds) for all master.
     21. If you want to check logs for any particular NameSpace.
-    22. If you want to check Events for any particular NameSpace. 
- ~~~
+    22. If you want to check Events for any particular NameSpace.
+   
+ 
   This Must-Gather Script will help you to fast track some basics sanity checks of must-gather.
- ~~~
-    
+~~~    
    
 **Usage of the SOS-Report script**
 sh sos-report-check.sh <case-id>
@@ -55,6 +56,7 @@ drwxrwxrwx. 3 yank     yank            70 May 17 07:00 0060-sosreport-bmworker22
 Choose the sos-report from the above output:
 
 **Once you choosed the file it will print all the required details of basic checks. What I have included as of the on the script details are below:**
+ ~~~
     1. Hostname of the node
     2. Uptime of the node
     3. Kernel Version
@@ -78,7 +80,7 @@ Choose the sos-report from the above output:
     21. Reebot count of node and provide time of last reboot only.
     22. Intentional reboot count of node and provide time of last reboot only.
     23. dmesg file path
-~~~
+
  This SOS-report Script will help you to fast track some basics sanity checks from the sos-report.
 ~~~
 
