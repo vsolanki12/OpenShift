@@ -99,7 +99,7 @@ drwxrwxrwx. 3 yank     yank           59 May 13 11:19 0050-must-gather.tar.gz
 drwxrwxrwx. 3 yank     yank         4096 May 17 07:10 0070-must-gather.tar.gz
 Choose the must-gather from the above output:0070-must-gather.tar.gz
 
-took too long messages date & time wise count etcd-master1.ocp-prd-dor.bell.corp.bce.ca 2022-05-15
+took too long messages date & time wise count <ETCD-MASTER-HOSTNAME> 2022-05-15
 more than 100ms:3373
 more than 200ms:1114
 more than 300ms:286
