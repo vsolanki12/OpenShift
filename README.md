@@ -1,5 +1,5 @@
 # OpenShift
-**This Repository containing the must-gather & sos-report analysis script which we can use from the Support Shell.**
+**This Repository containing the must-gather & sos-report analysis & ETCD took too long count check date wise scripts which we can use from the Support Shell.**
 
 **Usage of the Must-Gather script** 
 sh new_must_gather.sh <Case-id>
@@ -80,4 +80,31 @@ Choose the sos-report from the above output:
     23. dmesg file path
 ~~~
  This SOS-report Script will help you to fast track some basics sanity checks from the sos-report.
+~~~
+
+**Usage of the etcd_ttl script**     
+./etcd_ttl.sh <Case-id>
+
+It will provide the details of took too long messages count date wise per master from the must-gather logs. 
+**EXAMPLE:**
+$ ./etcd_ttl.sh 03217896
+drwxrwxrwx. 3 yank     yank           59 May 12 17:55 0030-must-gather.tar.gz
+drwxrwxrwx. 3 yank     yank           59 May 13 11:19 0050-must-gather.tar.gz
+drwxrwxrwx. 3 yank     yank         4096 May 17 07:10 0070-must-gather_bmworker22.tar.gz
+Choose the must-gather from the above output:0070-must-gather_bmworker22.tar.gz
+~~~    
+took too long messages date & time wise count etcd-master1.ocp-prd-dor.bell.corp.bce.ca 2022-05-15
+more than 100ms:3373
+more than 200ms:1114
+more than 300ms:286
+more than 400ms:163
+more than 500ms:119
+more than 600ms:75
+more than 700ms:54
+more than 800ms:37
+more than 900ms:20
+more than 1s:119
+more than 2s:82
+more than 3s:50
+more than 4s:3
 ~~~
