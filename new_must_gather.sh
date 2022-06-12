@@ -239,7 +239,7 @@ if [ $# == 1 ]
    echo "++++++++++++++++++++++++++++++++++++++++++++"$'\n'
    echo -e "$RED""etcd DB size""$NONE"
    echo "**********************"
-   echo -e "$YELLOW""`cat $ETCD_INFO_DIR/endpoint_status.json |jq '.[].Status|"Revision: " + (.header.revision|tostring) + " | DBsize: " + (.dbSize|tostring) + " DBinuse: " + (.dbSizeInUse|tostring) + " -> Difference: " + ((.dbSize - .dbSizeInUse)/.dbSizeInUse*100|tostring)+"%"'`""$NONE"
+   echo -e "$YELLOW""`cat $ETCD_INFO_DIR/endpoint_status.json |jq '.[].Status|"Revision: " + (.header.revision|tostring) + " | Version: " + (.version|tostring) + " | DBsize: " + (.dbSize|tostring) + " DBinuse: " + (.dbSizeInUse|tostring) + " -> Difference: " + ((.dbSize - .dbSizeInUse)/.dbSizeInUse*100|tostring)+"%"'`""$NONE"
    echo "======================================================================================================================================================"$'\n'
    for i in `ls $etcd_directory/pods/ | egrep -v 'pruner|guard|debug'|grep -i etcd`
     do
