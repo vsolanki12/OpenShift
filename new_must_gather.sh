@@ -243,6 +243,7 @@ if [ $# == 1 ]
    echo -e "$RED""etcd endpoint status -w table""$NONE"
    echo "***************************************"
    echo "|Leader ID|Member_ID|Revision|Version|RaFT_INDEX|RaftTerm|DBSize|DBUsed|Difference" > /tmp/etcd_enpoint.txt
+   echo "|++++++++++|+++++++++|+++++++++|+++++++++|+++++++++|+++++++++|+++++++++|+++++++++|+++++++++">> /tmp/etcd_enpoint.txt
    cat $ETCD_INFO_DIR/endpoint_status.json | jq '.[].Status|"|" + (.leader|tostring) + " |" + (.header.member_id|tostring) + " |" + (.header.revision|tostring) + " |" + (.version|tostring) + " |" + (.raftIndex|tostring) + " |" + (.raftTerm|tostring) + " |" + (.dbSize|tostring) + " |" + (.dbSizeInUse|tostring) + " |" + ((.dbSize - .dbSizeInUse)/.dbSizeInUse*100|tostring)+"%"'|tr -d '"' >> /tmp/etcd_enpoint.txt
    echo -e "$YELLOW""`cat /tmp/etcd_enpoint.txt|column -t -s "|"`""$NONE"
    echo "======================================================================================================================================================"$'\n'
