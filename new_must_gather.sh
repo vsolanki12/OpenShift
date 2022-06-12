@@ -237,6 +237,10 @@ if [ $# == 1 ]
    ETCD_INFO_DIR=`find $HOME/$CASE_ID/$CHOOSED_MUST_GATHER/$MUST_GATHER_File/ -type d -name etcd_info`
    echo -e "\e[1;33mPersistent Volume count:\e[0m `ls $PV_CHECK_DIR/core/persistentvolumes/ |wc -l`"
    echo "++++++++++++++++++++++++++++++++++++++++++++"$'\n'
+   echo -e "$RED""etcd health""$NONE"
+   echo "**********************"
+   echo -e "$YELLOW""`cat $ETCD_INFO_DIR/endpoint_health.json|jq -r '.[] | "\(.endpoint) \(.health) \(.took)"'`""$NONE"
+   echo "======================================================================================================================================================"$'\n'
    echo -e "$RED""etcd DB size""$NONE"
    echo "**********************"
    echo -e "$YELLOW""`cat $ETCD_INFO_DIR/endpoint_status.json |jq '.[].Status|"Revision: " + (.header.revision|tostring) + " | Version: " + (.version|tostring) + " | DBsize: " + (.dbSize|tostring) + " DBinuse: " + (.dbSizeInUse|tostring) + " -> Difference: " + ((.dbSize - .dbSizeInUse)/.dbSizeInUse*100|tostring)+"%"'`""$NONE"
