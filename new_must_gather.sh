@@ -237,13 +237,15 @@ if [ $# == 1 ]
    ETCD_INFO_DIR=`find $HOME/$CASE_ID/$CHOOSED_MUST_GATHER/$MUST_GATHER_File/ -type d -name etcd_info`
    echo -e "\e[1;33mPersistent Volume count:\e[0m `ls $PV_CHECK_DIR/core/persistentvolumes/ |wc -l`"
    echo "++++++++++++++++++++++++++++++++++++++++++++"$'\n'
-   echo -e "$RED""etcd health""$NONE"
-   echo "**********************"
-   echo -e "$YELLOW""`cat $ETCD_INFO_DIR/endpoint_health.json|jq -r '.[] | "\(.endpoint) \(.health) \(.took)"'`""$NONE"
+   echo -e "$RED""etcd Health Status""$NONE"
+   echo "***********************************"
+   echo -e "$YELLOW""`cat $ETCD_INFO_DIR/endpoint_health.json| jq '.[]|"" + (.endpoint|tostring) + " | is healthy: " + (.health|tostring) + " |successfully committed proposal: took =" + (.took|tostring)'|tr -d '"'`""$NONE"
    echo "======================================================================================================================================================"$'\n'
-   echo -e "$RED""etcd DB size""$NONE"
-   echo "**********************"
-   echo -e "$YELLOW""`cat $ETCD_INFO_DIR/endpoint_status.json |jq '.[].Status|"Revision: " + (.header.revision|tostring) + " | Version: " + (.version|tostring) + " | DBsize: " + (.dbSize|tostring) + " DBinuse: " + (.dbSizeInUse|tostring) + " -> Difference: " + ((.dbSize - .dbSizeInUse)/.dbSizeInUse*100|tostring)+"%"'`""$NONE"
+   echo -e "$RED""etcd endpoint status -w table""$NONE"
+   echo "***************************************"
+   echo "|Leader ID|Member_ID|Revision|Version|RaFT_INDEX|RaftTerm|DBSize|DBUsed|Difference" > /tmp/etcd_enpoint.txt
+   cat $ETCD_INFO_DIR/endpoint_status.json | jq '.[].Status|"|" + (.leader|tostring) + " |" + (.header.member_id|tostring) + " |" + (.header.revision|tostring) + " |" + (.version|tostring) + " |" + (.raftIndex|tostring) + " |" + (.raftTerm|tostring) + " |" + (.dbSize|tostring) + " |" + (.dbSizeInUse|tostring) + " |" + ((.dbSize - .dbSizeInUse)/.dbSizeInUse*100|tostring)+"%"'|tr -d '"' >> /tmp/etcd_enpoint.txt
+   echo -e "$YELLOW""`cat /tmp/etcd_enpoint.txt|column -t -s "|"`""$NONE"
    echo "======================================================================================================================================================"$'\n'
    for i in `ls $etcd_directory/pods/ | egrep -v 'pruner|guard|debug'|grep -i etcd`
     do
