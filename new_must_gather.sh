@@ -43,6 +43,14 @@ if [ $# == 1 ]
    echo "*********************************************************************************"
    omg get clusterversion -ojson | jq -r '.status.history[]| "\(.completionTime) \(.version)"' 
    echo "==========================================================================================================================================================="$'\n\n'
+    echo -e "\n\e[1;44mControl plane pod revisions\e[0m"
+   echo "************************************************************************"
+   for static in etcd kubeapiserver kubecontrollermanager kubescheduler
+    do
+     echo -e "====== ${static} ======"
+     omg get ${static} cluster -o json | jq -r '.status.conditions[] | select(.type == "NodeInstallerProgressing") | .message'
+    done
+   echo "==========================================================================================================================================================="$'\n\n'
    omg get nodes > $HOME/CHECK_LOGS/node_details.txt
    echo -e "\n\e[1;44mNode Count\e[0m"
    echo "*************************************************************************"
@@ -76,15 +84,6 @@ if [ $# == 1 ]
     break
    fi
    echo "==========================================================================================================================================================="$'\n\n'
-   echo -e "\n\e[1;44mControl plane pod revisions\e[0m"
-   echo "************************************************************************"
-   for static in etcd kubeapiserver kubecontrollermanager kubescheduler
-    do
-     echo -e "====== ${static} ======"
-     omg get ${static} cluster -o json | jq -r '.status.conditions[] | select(.type == "NodeInstallerProgressing") | .message'
-    done
-   echo "==========================================================================================================================================================="$'\n\n'
-   echo "*************************************************************************"
    echo -e "\n\e[1;42mNode NotReady state details\e[0m\n************************************************************************"
    NOT_READY=`omg get nodes | egrep -v 'ROLES'|egrep -i 'NotReady|unknown' | wc -l`
      if [ $NOT_READY -eq 0 ]
