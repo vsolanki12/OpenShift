@@ -236,6 +236,13 @@ if [ $# == 1 ]
    ETCD_INFO_DIR=`find $HOME/$CASE_ID/$CHOOSED_MUST_GATHER/$MUST_GATHER_File/ -type d -name etcd_info`
    echo -e "\e[1;33mPersistent Volume count:\e[0m `ls $PV_CHECK_DIR/core/persistentvolumes/ |wc -l`"
    echo "++++++++++++++++++++++++++++++++++++++++++++"$'\n'
+   echo -e "$RED""etcd Members details""$NONE"
+   echo "*************************************"
+   echo "|NAME|ID|ClientURL|peerURL" > /tmp/etcd_member_list.txt
+   echo "|++++++++++|+++++++++|+++++++++|+++++++++" >>/tmp/etcd_member_list.txt
+   cat $ETCD_INFO_DIR/member_list.json | jq '.members[]|"|" + (.name|tostring) + " |" + (.ID|tostring) + " |" + (.clientURLs[]|tostring) + " |" + (.peerURLs[]|tostring)'| tr -d '"' >> /tmp/etcd_member_list.txt
+   echo -e "$YELLOW""`cat  /tmp/etcd_member_list.txt|column -t -s "|"`""$NONE"
+   echo "======================================================================================================================================================"$'\n'
    echo -e "$RED""etcd Health Status""$NONE"
    echo "***********************************"
    echo -e "$YELLOW""`cat $ETCD_INFO_DIR/endpoint_health.json| jq '.[]|"" + (.endpoint|tostring) + " | is healthy: " + (.health|tostring) + " |successfully committed proposal: took =" + (.took|tostring)'|tr -d '"'`""$NONE"
