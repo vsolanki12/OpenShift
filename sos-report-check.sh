@@ -164,12 +164,25 @@ if [ $# == 1 ]
     read input
     if [ $input == "YES" ]
      then
-      echo -e "\e[01;31m`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet  | grep "orphaned pod"| awk -F'=' '{print $2}'|awk '{print $1}'|sort|uniq`\e[0m"
+      cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet  | grep "orphaned pod"| awk -F'=' '{print $2}'|awk '{print $1}'|sort|uniq > $HOME/$CASE_DIR/Orphan_pod_uid_list.log
+      echo -e "\e[01;35mLog File Created at $HOME/$CASE_DIR/Orphan_pod_uid_list.log\e[0m"
    else [ $input == "NO" ]
     break
    fi
   fi
   echo "=========================================================================================================================================================="$'\n'
+  NAME_RESERVED=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet  | grep "name is reserved" |wc -l`
+  if [ $NAME_RESERVED -eq 0 ]
+   then
+    echo -e "\e[01;32m No name is reserved error\e[0m"
+  else
+    echo -e "\e[01;31mTotal no name is reserved error Count=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet  | grep "name is reserved" |wc -l`\e[0m"
+    echo "Last 3 no name is reserved errors"
+    echo "----------------------------------"
+    cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet  | grep "name is reserved" > $HOME/$CASE_DIR/Name_Reserved_Error.log
+    echo -e "\e[01;35mLog File Created at $HOME/$CASE_DIR/Name_Reserved_Error.log\e[0m"
+   fi
+   echo "=========================================================================================================================================================="$'\n'
   CRIO_PANIC=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager|grep -i "panic: close of closed channel"|wc -l`
   if [ $CRIO_PANIC -eq 0 ]
    then
