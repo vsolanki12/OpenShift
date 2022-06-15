@@ -26,6 +26,7 @@ if [ $# == 1 ]
    echo -e "$YELLOW`ls -l $HOME/$CASE_ID/ |egrep 'xz|gz|zip|tar'|grep -v sos`$NONE"
    echo -e -n "\e[1;43mChoose the must-gather from the above output:\e[0m"
    read CHOOSED_MUST_GATHER
+   CL_SCOPE_CHECK_DIR=`find $HOME/$CASE_ID/$CHOOSED_MUST_GATHER/$MUST_GATHER_File/ -type d -name cluster-scoped-resources`
    omg use $HOME/$CASE_ID/$CHOOSED_MUST_GATHER > /tmp/must-gather-used.txt
    echo -e "\n\e[1;44m $CHOOSED_MUST_GATHER File used for this output \e[0m"
    echo "*************************************************************************"
@@ -53,8 +54,11 @@ if [ $# == 1 ]
      echo "************************************************************************"
      for static in etcd kubeapiserver kubecontrollermanager kubescheduler
       do
-       echo -e "====== ${static} ======"
-       omg get ${static} cluster -o json | jq -r '.status.conditions[] | select(.type == "NodeInstallerProgressing") | .message'
+       for rev_path in `ls $CL_SCOPE_CHECK_DIR/operator.openshift.io/ | grep -i $static
+        do 
+         cat $CL_SCOPE_CHECK_DIR/operator.openshift.io/$rev_path/cluster.yaml |yq -y '.status.conditions[] | select(.type == "NodeInstallerProgressing") | .message'|head -1
+        done
+      #omg get ${static} cluster -o json | jq -r '.status.conditions[] | select(.type == "NodeInstallerProgressing") | .message'
      done
     else
      break
