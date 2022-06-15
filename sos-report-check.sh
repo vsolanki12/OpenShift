@@ -162,7 +162,7 @@ if [ $# == 1 ]
     echo "*******************************************************************************************************************************************************"$'\n'
     echo -e -n "\e[01;32mDo you want to print all the orphan pod uid[YES/NO] :\e[0m"
     read input
-    if [ $input == "YES" ]
+    if [ $input == "YES" ] || [ $input == "Yes" ] || [ $input == "yes" ]
      then
       cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet  | grep "orphaned pod"| awk -F'=' '{print $2}'|awk '{print $1}'|sort|uniq > $HOME/$CASE_DIR/Orphan_pod_uid_list.log
       echo -e "\e[01;35mLog File Created at $HOME/$CASE_DIR/Orphan_pod_uid_list.log\e[0m"
