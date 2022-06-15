@@ -179,6 +179,7 @@ if [ $# == 1 ]
     echo -e "\e[01;31mTotal no name is reserved error Count=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet  | grep "name is reserved" |wc -l`\e[0m"
     echo "Last 3 no name is reserved errors"
     echo "----------------------------------"
+    echo -e "\e[01;31m`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet  | grep "name is reserved"|tail -3`\e[0m"
     cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet  | grep "name is reserved" > $HOME/$CASE_DIR/Name_Reserved_Error.log
     echo -e "\e[01;35mLog File Created at $HOME/$CASE_DIR/Name_Reserved_Error.log\e[0m"
    fi
