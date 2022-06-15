@@ -56,7 +56,8 @@ if [ $# == 1 ]
       do
        for rev_path in `ls $CL_SCOPE_CHECK_DIR/operator.openshift.io/ | grep -i $static`
         do 
-         echo -e "$YELLOW""$static Revision:`cat $CL_SCOPE_CHECK_DIR/operator.openshift.io/$rev_path/cluster.yaml |yq -y '.status.conditions[] | select(.type == "NodeInstallerProgressing") | .message'|head -1`""$NONE"
+         echo -e "$static:"$YELLOW" `cat $CL_SCOPE_CHECK_DIR/operator.openshift.io/$rev_path/cluster.yaml |yq -y '.status.conditions[] | select(.type == "NodeInstallerProgressing") | .message'|head -1`""$NONE"
+         echo "-------------------------------------------------------------"
         done
       #omg get ${static} cluster -o json | jq -r '.status.conditions[] | select(.type == "NodeInstallerProgressing") | .message'
      done
