@@ -54,7 +54,7 @@ if [ $# == 1 ]
      echo "************************************************************************"
      for static in etcd kubeapiserver kubecontrollermanager kubescheduler
       do
-       for rev_path in `ls $CL_SCOPE_CHECK_DIR/operator.openshift.io/ | grep -i $static
+       for rev_path in `ls $CL_SCOPE_CHECK_DIR/operator.openshift.io/ | grep -i $static`
         do 
          cat $CL_SCOPE_CHECK_DIR/operator.openshift.io/$rev_path/cluster.yaml |yq -y '.status.conditions[] | select(.type == "NodeInstallerProgressing") | .message'|head -1
         done
