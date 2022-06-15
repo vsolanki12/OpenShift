@@ -246,9 +246,9 @@ if [ $# == 1 ]
    echo -e "\e[1;42mETCD Analysis\e[0m\n************************************************************************"
    MUST_GATHER_File=`ls $HOME/$CASE_ID/$CHOOSED_MUST_GATHER/ | grep -i must`
    etcd_directory=`find $HOME/$CASE_ID/$CHOOSED_MUST_GATHER/$MUST_GATHER_File/ -type d -name openshift-etcd`
-   PV_CHECK_DIR=`find $HOME/$CASE_ID/$CHOOSED_MUST_GATHER/$MUST_GATHER_File/ -type d -name cluster-scoped-resources`
+   #PV_CHECK_DIR=`find $HOME/$CASE_ID/$CHOOSED_MUST_GATHER/$MUST_GATHER_File/ -type d -name cluster-scoped-resources`
    ETCD_INFO_DIR=`find $HOME/$CASE_ID/$CHOOSED_MUST_GATHER/$MUST_GATHER_File/ -type d -name etcd_info`
-   echo -e "\e[1;33mPersistent Volume count:\e[0m `ls $PV_CHECK_DIR/core/persistentvolumes/ |wc -l`"
+   echo -e "\e[1;33mPersistent Volume count:\e[0m `ls $CL_SCOPE_CHECK_DIR/core/persistentvolumes/ |wc -l`"
    echo "++++++++++++++++++++++++++++++++++++++++++++"$'\n'
    echo -e "$RED""etcd Members details""$NONE"
    echo "*************************************"
