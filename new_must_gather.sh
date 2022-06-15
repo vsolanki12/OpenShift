@@ -43,13 +43,22 @@ if [ $# == 1 ]
    echo "*********************************************************************************"
    omg get clusterversion -ojson | jq -r '.status.history[]| "\(.completionTime) \(.version)"' 
    echo "==========================================================================================================================================================="$'\n\n'
-    echo -e "\n\e[1;44mControl plane pod revisions\e[0m"
-   echo "************************************************************************"
-   for static in etcd kubeapiserver kubecontrollermanager kubescheduler
-    do
-     echo -e "====== ${static} ======"
-     omg get ${static} cluster -o json | jq -r '.status.conditions[] | select(.type == "NodeInstallerProgressing") | .message'
-    done
+   echo -e "\n\e[1;44mControl Plane Revision Check Option\e[0m"
+   echo "*************************************************************************"
+   echo -n -e "$BLUE""Do you want to list all the nodes[Yes/NO]:""$NONE"
+   read REV_INPUT
+   if [ $REV_INPUT == "Yes" ] || [ $REV_INPUT == "YES" ] || [ $REV_INPUT == "yes" ]
+    then 
+     echo -e "\n\e[1;44mControl plane pod revisions\e[0m"
+     echo "************************************************************************"
+     for static in etcd kubeapiserver kubecontrollermanager kubescheduler
+      do
+       echo -e "====== ${static} ======"
+       omg get ${static} cluster -o json | jq -r '.status.conditions[] | select(.type == "NodeInstallerProgressing") | .message'
+     done
+    else
+     break
+    fi
    echo "==========================================================================================================================================================="$'\n\n'
    omg get nodes > $HOME/CHECK_LOGS/node_details.txt
    echo -e "\n\e[1;44mNode Count\e[0m"
@@ -71,7 +80,7 @@ if [ $# == 1 ]
    echo "*************************************************************************"
    echo -n -e "$BLUE""Do you want to list all the nodes[Yes/NO]:""$NONE"
    read ANNOT_INPUT
-   if [ $ANNOT_INPUT == "Yes" ] || [ ANNOT_INPUT == "YES" ] || [ $ANNOT_INPUT == "yes" ]
+   if [ $ANNOT_INPUT == "Yes" ] || [ $ANNOT_INPUT == "YES" ] || [ $ANNOT_INPUT == "yes" ]
     then
      echo -e "\nAnnotations output file\n*******************************************************************************" > $HOME/$CASE_ID/Annotations_file.txt
      for i in `omg get nodes|grep -v NAME|awk '{print $1}'`
