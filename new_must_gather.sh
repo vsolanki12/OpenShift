@@ -88,12 +88,22 @@ if [ $# == 1 ]
    if [ $ANNOT_INPUT == "Yes" ] || [ $ANNOT_INPUT == "YES" ] || [ $ANNOT_INPUT == "yes" ]
     then
      echo -e "\nAnnotations output file\n*******************************************************************************" > $HOME/$CASE_ID/Annotations_file.txt
-     for i in `omg get nodes|grep -v NAME|awk '{print $1}'`
+     for i in `ls $CL_SCOPE_CHECK_DIR/core/nodes/*.yaml`
       do
-       echo -e "\n\e[1;42m$i\e[0m\n*******************************************************************************" >> $HOME/$CASE_ID/Annotations_file.txt
-       omg get node $i -ojson | jq -r '.metadata.annotations' >> $HOME/$CASE_ID/Annotations_file.txt
+       echo $i|awk -F'/' '{print $NR}' >> $HOME/$CASE_ID/Annotations_file.txt
+       echo "*******************************************************************************" >> $HOME/$CASE_ID/Annotations_file.txt
+       cat $i |yq -y '.metadata.annotations' >> $HOME/$CASE_ID/Annotations_file.txt
+       CURRENT=`cat $i|yq -y '.metadata.annotations' | grep -i current | awk -F':' '{print $2}' | tr -d ' '`
+       DESIRED=`cat $i|yq -y '.metadata.annotations' | grep -i desired | awk -F':' '{print $2}' | tr -d ' '`
+       if [ "$CURRENT" == "$DESIRED" ]
+        then
+         echo -e "$GREEN""Current state matching with desired state""$NONE" >> $HOME/$CASE_ID/Annotations_file.txt
+       else
+         echo -e "$RED""Current Annotation is not matching with desired state""$NONE" >> $HOME/$CASE_ID/Annotations_file.txt
+       fi
+     echo "**********************************************************************************************************************************************"$'\n' >> $HOME/$CASE_ID/Annotations_file.txt
      done
-     echo -e "\e[1:31mAnnotation File Created $HOME/$CASE_ID/Annotations_file.txt\e[0m"
+     echo -e "$RED""Annotation File Created $HOME/$CASE_ID/Annotations_file.txt""$NONE"
    else
     break
    fi
