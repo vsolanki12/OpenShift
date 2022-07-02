@@ -90,7 +90,7 @@ if [ $# == 1 ]
      echo -e "\nAnnotations output file\n*******************************************************************************" > $HOME/$CASE_ID/Annotations_file.txt
      for i in `ls $CL_SCOPE_CHECK_DIR/core/nodes/*.yaml`
       do
-       echo $i|awk -F'/' '{print $NR}' >> $HOME/$CASE_ID/Annotations_file.txt
+       echo $i|awk -F'/' '{print $NF}' >> $HOME/$CASE_ID/Annotations_file.txt
        echo "*******************************************************************************" >> $HOME/$CASE_ID/Annotations_file.txt
        cat $i |yq -y '.metadata.annotations' >> $HOME/$CASE_ID/Annotations_file.txt
        CURRENT=`cat $i|yq -y '.metadata.annotations' | grep -i current | awk -F':' '{print $2}' | tr -d ' '`
