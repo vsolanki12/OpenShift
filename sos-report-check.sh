@@ -148,6 +148,19 @@ if [ $# == 1 ]
     echo -e "\e[01;35mLog File Created at $HOME/$CASE_DIR/PLEG_NotHealthy_Error.log\e[0m"
   fi
   echo "=========================================================================================================================================================="$'\n'
+  OOM_SYS=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet  | grep "Got sys oom event"|wc -l`
+  if [ $OOM_SYS -eq 0 ]
+   then
+    echo -e "\e[01;32m No sys oom event error\e[0m"
+  else
+   echo -e "\e[01;31mTotal sys oom event error=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet  | grep "Got sys oom event"|wc -l`\e[0m"
+   echo "Last 3 sys oom event errors"
+    echo "----------------------------------"
+    echo -e "\e[01;31m`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet  | grep "Got sys oom event" |tail -3`\e[0m"
+    cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet  | grep "Got sys oom event" > $HOME/$CASE_DIR/SYS_OOM_Error.log
+    echo -e "\e[01;35mLog File Created at $HOME/$CASE_DIR/SYS_OOM_Error.log\e[0m"
+  fi
+  echo "=========================================================================================================================================================="$'\n'
   ORPHAN_POD=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet  | grep "orphaned pod"|wc -l`
   if [ $ORPHAN_POD -eq 0 ]
    then
