@@ -41,6 +41,29 @@ if [ $# == 1 ]
   echo "===================================================================================="$'\n'
   cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/free
   echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"$'\n\n'
+  echo -e "\e[1;43m Checking Memory from "meminfo file" \e[0m"
+  echo "===================================================================================="$'\n'
+  TOT_MEM=$(gawk '/^MemTotal/{printf "%.2f\n", $2/1024/1024}' "$HOME/$CASE_DIR/$SOS_DIR/$SOS_Final"/proc/meminfo)
+  FREE_MEM=$(gawk '/^MemFree/{printf "%.2f\n", $2/1024/1024}' "$HOME/$CASE_DIR/$SOS_DIR/$SOS_Final"/proc/meminfo)
+  AVAIL_MEM=$(gawk '/^MemAvailable/{printf "%.2f\n", $2/1024/1024}' "$HOME/$CASE_DIR/$SOS_DIR/$SOS_Final"/proc/meminfo)
+  PER_CPU=$(gawk '/^Percpu/{printf "%.2f\n", $2/1024/1024}' "$HOME/$CASE_DIR/$SOS_DIR/$SOS_Final"/proc/meminfo)
+  USED_MEM=`echo "$TOT_MEM - $FREE_MEM" |bc`
+  USED_MEM_A=`echo "$TOT_MEM - $AVAIL_MEM"|bc`
+  echo "Total Memory="$TOT_MEM"GB"
+  echo "Used Memory as per free Memory="$USED_MEM"GB"
+  echo "Free Memory="$FREE_MEM"GB"
+  echo "Used Memory as per available Memory="$USED_MEM_A"GB"
+  echo "Available Meory="$AVAIL_MEM"GB"
+  echo "PerCpu Memory="$PER_CPU"GB"
+  echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"$'\n\n'
+  echo -e "\e[1;43m Checking cgroup memory counter from "cgroup file" \e[0m"
+  echo "===================================================================================="$'\n'
+  cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/proc/cgroups | grep -E "name|memory"
+  echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"$'\n\n'
+  echo -e "\e[1;43m Checking the active cgroup tasks \e[0m"
+  echo "===================================================================================="$'\n'
+  find $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sys/fs/cgroup/memory -name "*tasks*" | wc -l
+  echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"$'\n\n'
   echo -e "\e[1;43m Checking the File System which are greater than 70% \e[0m"
   echo "-----------------------------------------------------------"$'\n'
   count=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/df | egrep "([70,80,90][0-9]|100)%"|wc -l`
