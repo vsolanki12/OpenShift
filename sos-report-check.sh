@@ -232,6 +232,17 @@ if [ $# == 1 ]
    echo -e "\e[01;35mLog File Created at $HOME/$CASE_DIR/Crio_Panic.log\e[0m"
   fi
   echo "=========================================================================================================================================================="$'\n'
+  SOFT_LOOKUP_ERROR=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager|grep -i "soft lockup" |wc -l`
+  if [ $SOFT_LOOKUP_ERROR -eq 0 ]
+   then
+    echo -e "\e[01;32m No Error of Kernel hung soft lockup\e[0m"
+  else
+   echo "Soft Lookup Error=$SOFT_LOOKUP_ERROR" 
+   echo "-----------------------------"
+   echo -e "\e[01;31m`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager|grep -i "soft lockup"|tail -3`\e[0m"
+   cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager|grep -i "soft lockup" > $HOME/$CASE_DIR/soft_lookup.log
+  fi
+  echo "=========================================================================================================================================================="$'\n'
   echo -e "\e[1;43m Checking the Reboot of node from the journalctl_--no-pager logs \e[0m"
   echo "---------------------------------------------------------------------------------------"$'\n'
   REBOOT_COUNT=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager| grep '\-- Reboot\b'|wc -l`
