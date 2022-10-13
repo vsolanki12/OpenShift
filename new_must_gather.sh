@@ -27,10 +27,10 @@ if [ $# == 1 ]
    echo -e -n "\e[1;43mChoose the must-gather from the above output:\e[0m"
    read CHOOSED_MUST_GATHER
    CL_SCOPE_CHECK_DIR=`find $HOME/$CASE_ID/$CHOOSED_MUST_GATHER/$MUST_GATHER_File/ -type d -name cluster-scoped-resources`
-   omg use $HOME/$CASE_ID/$CHOOSED_MUST_GATHER > /tmp/must-gather-used.txt
+   omg use $HOME/$CASE_ID/$CHOOSED_MUST_GATHER > $HOME/must-gather-used.txt
    echo -e "\n\e[1;44m $CHOOSED_MUST_GATHER File used for this output \e[0m"
    echo "*************************************************************************"
-   omg use $HOME/$CASE_ID/$MUST_GATHER >/tmp/must-gather-used.txt
+   omg use $HOME/$CASE_ID/$MUST_GATHER > $HOME/must-gather-used.txt
    echo -e "\n\e[1;42mCluster Infrastructure Check\e[0m\n*********************************************"
    echo -e "$YELLOW""Platform Type:`omg get infrastructure/cluster -o json | jq '.spec.platformSpec.type'`""$NONE"
    echo "==========================================================================================================================================================="$'\n\n'
