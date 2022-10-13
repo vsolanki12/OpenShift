@@ -264,7 +264,7 @@ if [ $# == 1 ]
    echo "*************************************"
    echo "|NAME|ID|ClientURL|peerURL" > $HOME/etcd_member_list.txt
    echo "|++++++++++|+++++++++|+++++++++|+++++++++" >>$HOME/etcd_member_list.txt
-   cat $ETCD_INFO_DIR/member_list.json | jq '.members[]|"|" + (.name|tostring) + " |" + (.ID|tostring) + " |" + (.clientURLs[]|tostring) + " |" + (.peerURLs[]|tostring)'| tr -d '"' >> /tmp/etcd_member_list.txt
+   cat $ETCD_INFO_DIR/member_list.json | jq '.members[]|"|" + (.name|tostring) + " |" + (.ID|tostring) + " |" + (.clientURLs[]|tostring) + " |" + (.peerURLs[]|tostring)'| tr -d '"' >> $HOME/etcd_member_list.txt
    echo -e "$YELLOW""`cat  $HOME/etcd_member_list.txt|column -t -s "|"`""$NONE"
    echo "======================================================================================================================================================"$'\n'
    echo -e "$RED""etcd Health Status""$NONE"
@@ -275,7 +275,7 @@ if [ $# == 1 ]
    echo "***************************************"
    echo "|Leader ID|Member_ID|Revision|Version|RaFT_INDEX|RaftTerm|DBSize|DBUsed|Difference" > $HOME/etcd_enpoint.txt
    echo "|++++++++++|+++++++++|+++++++++|+++++++++|+++++++++|+++++++++|+++++++++|+++++++++|+++++++++">> $HOME/etcd_enpoint.txt
-   cat $ETCD_INFO_DIR/endpoint_status.json | jq '.[].Status|"|" + (.leader|tostring) + " |" + (.header.member_id|tostring) + " |" + (.header.revision|tostring) + " |" + (.version|tostring) + " |" + (.raftIndex|tostring) + " |" + (.raftTerm|tostring) + " |" + ((.dbSize)/1024/1024|tostring)+ "MB" + " |" + ((.dbSizeInUse)/1024/1024|tostring)+ "MB" + " |" + ((.dbSize - .dbSizeInUse)/.dbSizeInUse*100|tostring)+"%"'|tr -d '"' >> /tmp/etcd_enpoint.txt
+   cat $ETCD_INFO_DIR/endpoint_status.json | jq '.[].Status|"|" + (.leader|tostring) + " |" + (.header.member_id|tostring) + " |" + (.header.revision|tostring) + " |" + (.version|tostring) + " |" + (.raftIndex|tostring) + " |" + (.raftTerm|tostring) + " |" + ((.dbSize)/1024/1024|tostring)+ "MB" + " |" + ((.dbSizeInUse)/1024/1024|tostring)+ "MB" + " |" + ((.dbSize - .dbSizeInUse)/.dbSizeInUse*100|tostring)+"%"'|tr -d '"' >> $HOME/etcd_enpoint.txt
    echo -e "$YELLOW""`cat $HOME/etcd_enpoint.txt|column -t -s "|"`""$NONE"
    echo "======================================================================================================================================================"$'\n'
    for i in `ls $etcd_directory/pods/ | egrep -v 'pruner|guard|debug'|grep -i etcd`
