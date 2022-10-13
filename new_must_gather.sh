@@ -122,13 +122,13 @@ if [ $# == 1 ]
    #echo "==========================================================================================================================================================="$'\n\n'
    echo -e "\n\e[1;41mCluster Operator which are in PROGRESSING/DEGRADED state\e[0m\n************************************************************************"
    omg get co | awk '$4=="True"||$5=="True"'
-   omg get co | awk '$4=="True"||$5=="True"' | awk '{print $1}' > /tmp/Failed_ClusterOperator_NAME.txt
+   omg get co | awk '$4=="True"||$5=="True"' | awk '{print $1}' > $HOME/Failed_ClusterOperator_NAME.txt
    echo "==========================================================================================================================================================="$'\n\n'
-   Degraded_CO=`cat /tmp/Failed_ClusterOperator_NAME.txt|wc -l`
+   Degraded_CO=`cat $HOME/Failed_ClusterOperator_NAME.txt|wc -l`
    if [ $Degraded_CO -gt 0 ]
     then
      echo -e "\n\e[1;41mLogs file of Cluster Operator which are in PROGRESSING/DEGRADED state\e[0m\n************************************************************************"
-     for i in `cat /tmp/Failed_ClusterOperator_NAME.txt`
+     for i in `cat $HOME/Failed_ClusterOperator_NAME.txt`
       do
        if [ $i == "storage" ]
         then
@@ -262,10 +262,10 @@ if [ $# == 1 ]
    echo "++++++++++++++++++++++++++++++++++++++++++++"$'\n'
    echo -e "$RED""etcd Members details""$NONE"
    echo "*************************************"
-   echo "|NAME|ID|ClientURL|peerURL" > /tmp/etcd_member_list.txt
-   echo "|++++++++++|+++++++++|+++++++++|+++++++++" >>/tmp/etcd_member_list.txt
+   echo "|NAME|ID|ClientURL|peerURL" > $HOME/etcd_member_list.txt
+   echo "|++++++++++|+++++++++|+++++++++|+++++++++" >>$HOME/etcd_member_list.txt
    cat $ETCD_INFO_DIR/member_list.json | jq '.members[]|"|" + (.name|tostring) + " |" + (.ID|tostring) + " |" + (.clientURLs[]|tostring) + " |" + (.peerURLs[]|tostring)'| tr -d '"' >> /tmp/etcd_member_list.txt
-   echo -e "$YELLOW""`cat  /tmp/etcd_member_list.txt|column -t -s "|"`""$NONE"
+   echo -e "$YELLOW""`cat  $HOME/etcd_member_list.txt|column -t -s "|"`""$NONE"
    echo "======================================================================================================================================================"$'\n'
    echo -e "$RED""etcd Health Status""$NONE"
    echo "***********************************"
@@ -273,10 +273,10 @@ if [ $# == 1 ]
    echo "======================================================================================================================================================"$'\n'
    echo -e "$RED""etcd endpoint status -w table""$NONE"
    echo "***************************************"
-   echo "|Leader ID|Member_ID|Revision|Version|RaFT_INDEX|RaftTerm|DBSize|DBUsed|Difference" > /tmp/etcd_enpoint.txt
-   echo "|++++++++++|+++++++++|+++++++++|+++++++++|+++++++++|+++++++++|+++++++++|+++++++++|+++++++++">> /tmp/etcd_enpoint.txt
+   echo "|Leader ID|Member_ID|Revision|Version|RaFT_INDEX|RaftTerm|DBSize|DBUsed|Difference" > $HOME/etcd_enpoint.txt
+   echo "|++++++++++|+++++++++|+++++++++|+++++++++|+++++++++|+++++++++|+++++++++|+++++++++|+++++++++">> $HOME/etcd_enpoint.txt
    cat $ETCD_INFO_DIR/endpoint_status.json | jq '.[].Status|"|" + (.leader|tostring) + " |" + (.header.member_id|tostring) + " |" + (.header.revision|tostring) + " |" + (.version|tostring) + " |" + (.raftIndex|tostring) + " |" + (.raftTerm|tostring) + " |" + ((.dbSize)/1024/1024|tostring)+ "MB" + " |" + ((.dbSizeInUse)/1024/1024|tostring)+ "MB" + " |" + ((.dbSize - .dbSizeInUse)/.dbSizeInUse*100|tostring)+"%"'|tr -d '"' >> /tmp/etcd_enpoint.txt
-   echo -e "$YELLOW""`cat /tmp/etcd_enpoint.txt|column -t -s "|"`""$NONE"
+   echo -e "$YELLOW""`cat $HOME/etcd_enpoint.txt|column -t -s "|"`""$NONE"
    echo "======================================================================================================================================================"$'\n'
    for i in `ls $etcd_directory/pods/ | egrep -v 'pruner|guard|debug'|grep -i etcd`
     do
