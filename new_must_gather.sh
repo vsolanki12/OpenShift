@@ -282,7 +282,8 @@ if [ $# == 1 ]
     do
      echo $i
      echo "++++++++++++++++++++++++++++++++++++++++++++"
-     echo -e "\e[1;33metcd server is likely overloaded messages:\e[0m`cat $etcd_directory/pods/$i/etcd/etcd/logs/current.log|grep 'overload'|wc -l`"
+     echo -e "\e[1;33metcd server is likely overloaded messages:\e[0m`cat $etcd_directory/pods/$i/etcd/etcd/logs/current.log|grep 'leader is overloaded likely'|wc -l`"
+     echo -e "\e[1;33metcd server overloaded network messages:\e[0m`cat $etcd_directory/pods/$i/etcd/etcd/logs/current.log|grep 'overloaded network'|wc -l`"
      echo -e "\e[1;33mtook too long messages count:\e[0m `cat $etcd_directory/pods/$i/etcd/etcd/logs/current.log|grep 'took too long'|wc -l`"
      echo -e "\e[1;33mntp clock difference messages count:\e[0m `cat $etcd_directory/pods/$i/etcd/etcd/logs/current.log|grep 'clock difference'|wc -l`"
      echo -e "\e[1;33mfailed to send out heartbeat on time messages count:\e[0m `cat $etcd_directory/pods/$i/etcd/etcd/logs/current.log|grep 'failed to send out heartbeat on time'|wc -l`"
