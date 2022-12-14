@@ -44,6 +44,15 @@ if [ $# == 1 ]
    echo "*********************************************************************************"
    omg get clusterversion -ojson | jq -r '.status.history[]| "\(.completionTime) \(.version)"' 
    echo "==========================================================================================================================================================="$'\n\n'
+   echo -e "\n\e[1;46mCluster Master Node Memory & Cpu Capacity\e[0m"
+   echo "*********************************************************************************"
+   echo "Node | Cpu | Memory"
+   echo "+++++++++++++++++++++++++++++++"
+   for master in `omg get nodes | grep -i master | awk '{print $1}'`
+    do
+     echo "$master|`omg get nodes $master -ojson|jq -r '.status.capacity| "\(.cpu)|\(.memory)"'`"
+   done
+   echo "==========================================================================================================================================================="$'\n\n'
    echo -e "\n\e[1;44mControl Plane Revision Check Option\e[0m"
    echo "*************************************************************************"
    echo -n -e "$BLUE""Do you want to list all the nodes[Yes/NO]:""$NONE"
