@@ -257,10 +257,26 @@ if [ $# == 1 ]
    omg get pod -A | egrep -v 'Running|Completed|Succeeded'
    echo "==========================================================================================================================================================="$'\n\n'
    echo -e "\n\e[1;42mSecrets per NameSapce\e[0m\n************************************************************************"
-   omg get secrets -A | awk '{ns[$1]++}END{for (i in ns) print i,ns[i]}'
+   echo -e "$YELLOW""Total Number of Secrets in all NameSpaces""$NONE":`omg get secrets -A| grep -v NAMESPACE | awk '{ns[$1]++}END{for (i in ns) print ns[i]}'|awk '{ sum += $1 } END { print sum }'`
+   echo -n  -e "$RED""Do You want to check Secrets per NameSapce [Yes/No]:""$NONE"
+   read SECRET_COUNT
+   if [ $SECRET_COUNT == "Yes" ] || [ $SECRET_COUNT == "YES" ] || [ $SECRET_COUNT == "yes" ]
+    then
+     omg get secrets -A | awk '{ns[$1]++}END{for (i in ns) print i,ns[i]}'
+   else
+    break
+   fi
    echo "==========================================================================================================================================================="$'\n\n'
    echo -e "\n\e[1;42mList all the configmaps\e[0m\n************************************************************************"
-   omg get configmaps
+   echo -e "$YELLOW""Total Number of Configmaps in all NameSpaces""$NONE":`omg get configmaps -A | awk '{ns[$1]++}END{for (i in ns) print ns[i]}'|awk '{ sum += $1 } END { print sum }'`
+   echo -n  -e "$RED""Do You want to check Secrets per NameSapce [Yes/No]:""$NONE"
+   read CM_COUNT
+   if [ $CM_COUNT == "Yes" ] || [ $CM_COUNT == "YES" ] || [ $CM_COUNT == "yes" ]
+    then
+     omg get configmaps -A | awk '{ns[$1]++}END{for (i in ns) print i,ns[i]}'
+   else
+    break
+   fi
    echo "==========================================================================================================================================================="$'\n\n'
    echo -e "\e[1;42mETCD Analysis\e[0m\n************************************************************************"
    MUST_GATHER_File=`ls $HOME/$CASE_ID/$CHOOSED_MUST_GATHER/ | grep -i must`
