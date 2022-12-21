@@ -311,6 +311,7 @@ if [ $# == 1 ]
     do
      echo $i
      echo "++++++++++++++++++++++++++++++++++++++++++++"
+     echo -e "\e[1;33metcd last defragmentation status:\e[0m`cat $etcd_directory/pods/$i/etcd/etcd/logs/current.log|grep 'finished defragment'|tail -1`"
      echo -e "\e[1;33metcd server is likely overloaded messages:\e[0m`cat $etcd_directory/pods/$i/etcd/etcd/logs/current.log|grep 'leader is overloaded likely'|wc -l`"
      echo -e "\e[1;33metcd server overloaded network messages:\e[0m`cat $etcd_directory/pods/$i/etcd/etcd/logs/current.log|grep 'overloaded network'|wc -l`"
      echo -e "\e[1;33mtook too long messages count:\e[0m `cat $etcd_directory/pods/$i/etcd/etcd/logs/current.log|grep 'took too long'|wc -l`"
