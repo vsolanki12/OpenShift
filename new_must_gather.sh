@@ -254,7 +254,7 @@ if [ $# == 1 ]
     then
      echo -e "\n\e[1;42mPod Count NameSpace wise\e[0m\n************************************************************************"
     #for i in `omg get nodes | egrep -v 'NAME' |awk '{print $1}'`; do echo "$i:`omg get pod -A -owide | grep $i|wc -l`"; done
-     omg get pods -A|grep -v NAMESPACE | awk '{ns[$1]++}END{for (i in ns) print i,ns[i]}'
+     omg get pods -A | awk '{ns[$1]++}END{for (i in ns) print i,ns[i]}'
    else
     break
    fi
@@ -264,7 +264,7 @@ if [ $# == 1 ]
    if [ $POD_COUNT == "Yes" ] || [ $POD_COUNT == "YES" ] || [ $POD_COUNT == "yes" ]
     then
      echo -e "\n\e[1;42mPod Count NameSpace wise\e[0m\n************************************************************************"
-     omg get pods -A -owide|grep -v NODE|awk '{nodename[$8]++}END{for (i in nodename) print i,nodename[i]}'
+     omg get pods -A -owide|awk '{nodename[$8]++}END{for (i in nodename) print i,nodename[i]}'
    else
     break
    fi
