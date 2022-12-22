@@ -247,12 +247,24 @@ if [ $# == 1 ]
    echo -e "\n\e[1;42mAPI DETAILS Check from NameSpace openshift-kube-apiserver\e[0m\n************************************************************************"
    omg get pod -n openshift-kube-apiserver | grep -v 'Succeeded'
    echo "==========================================================================================================================================================="$'\n\n'
+   echo -e "$YELLOW""Pod Count in All Default NameSpaces:""$NONE"`omg get pods -A| grep -v NAMESPACE | awk '{ns[$1]++}END{for (i in ns) print ns[i]}'|awk '{ sum += $1 } END { print sum }'`
+   echo -n  -e "$RED""Do You want to check NameSpace Wise pod count [Yes/No]:""$NONE"
+   read POD_COUNT
+   if [ $POD_COUNT == "Yes" ] || [ $POD_COUNT == "YES" ] || [ $POD_COUNT == "yes" ]
+    then
+     echo -e "\n\e[1;42mPod Count NameSpace wise\e[0m\n************************************************************************"
+    #for i in `omg get nodes | egrep -v 'NAME' |awk '{print $1}'`; do echo "$i:`omg get pod -A -owide | grep $i|wc -l`"; done
+     omg get pods -A|grep -v NAMESPACE | awk '{ns[$1]++}END{for (i in ns) print i,ns[i]}'
+   else
+    break
+   fi
+   echo "==========================================================================================================================================================="$'\n\n'
    echo -n  -e "$RED""Do You want to check Node Wise pod count [Yes/No]:""$NONE"
    read POD_COUNT
    if [ $POD_COUNT == "Yes" ] || [ $POD_COUNT == "YES" ] || [ $POD_COUNT == "yes" ]
     then
-     echo -e "\n\e[1;42mPod Count Node wise\e[0m\n************************************************************************"
-     for i in `omg get nodes | egrep -v 'NAME' |awk '{print $1}'`; do echo "$i:`omg get pod -A -owide | grep $i|wc -l`"; done
+     echo -e "\n\e[1;42mPod Count NameSpace wise\e[0m\n************************************************************************"
+     omg get pods -A -owide|grep -v NODE|awk '{nodename[$8]++}END{for (i in nodename) print i,nodename[i]}'
    else
     break
    fi
