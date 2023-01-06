@@ -34,6 +34,7 @@ if [ $# == 1 ]
    echo -e "\n\e[1;42mCluster Infrastructure Check\e[0m\n*********************************************"
    echo -e "$YELLOW""Platform Type:`omg get infrastructure/cluster -o json | jq '.spec.platformSpec.type'`""$NONE"
    echo -e "$YELLOW""Cluster ID:""$NONE"`omg get clusterversion -o json | jq '.spec.clusterID'`
+   echo -e "$YELLOW""Cluster Channel:""$NONE"`omg get clusterversion -ojson | jq '.spec.channel'`
    echo "==========================================================================================================================================================="$'\n\n'
    echo -e "\n\e[1;42mCluster Network Check\e[0m\n*********************************************"
    omg get network/cluster -oyaml| grep -v "f:status:" |grep "status:" -A7|grep -v status
