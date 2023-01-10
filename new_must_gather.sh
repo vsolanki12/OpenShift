@@ -333,7 +333,11 @@ if [ $# == 1 ]
      echo -e "\e[1;33mfailed to send out heartbeat on time messages count:\e[0m `cat $etcd_directory/pods/$i/etcd/etcd/logs/current.log|grep 'failed to send out heartbeat on time'|wc -l`"
      echo -e "\e[1;33mdatabase space exceeded messages count:\e[0m `cat $etcd_directory/pods/$i/etcd/etcd/logs/current.log|grep 'database space exceeded'|wc -l`"
      echo -e "\e[1;33mleader changed messages count:\e[0m `cat $etcd_directory/pods/$i/etcd/etcd/logs/current.log|grep 'leader changed'|wc -l`"
-     if [[ $CL_VERSION = 4.8 ]] || [[ $CL_VERSION > 4.8 ]]
+     if [[ $CL_VERSION = 4.10 ]] || [[ $CL_VERSION > 4.10 ]]
+      then
+       echo -e "\e[1;33mCompaction highest seconds:\e[0m\n`cat $etcd_directory/pods/$i/etcd/etcd/logs/current.log|grep "compaction"| grep -v downgrade| grep -E "[0-9]+(.[0-9]+)s"|cut -d " " -f4 |  cut -d "," -f3 | cut -d ":" -f2| grep -v took  |sort| tail -6`"
+       echo -e "\e[1;33mCompaction highest ms:\e[0m\n`cat $etcd_directory/pods/$i/etcd/etcd/logs/current.log|grep "compaction"| grep -v downgrade| grep -E "[0-9]+(.[0-9]+)ms"|cut -d " " -f4 |  cut -d "," -f3 | cut -d ":" -f2| grep -v took  |sort| tail -6`"
+     elif [[ $CL_VERSION = 4.8 ]] || [[ $CL_VERSION > 4.8 ]]
       then
        echo -e "\e[1;33mCompaction highest seconds:\e[0m\n`cat $etcd_directory/pods/$i/etcd/etcd/logs/current.log|grep "compaction"| grep -v downgrade| grep -E "[0-9]+(.[0-9]+)s"|grep -o '[^,]*$'| cut -d":" -f2|grep -oP '"\K[^"]+'|sort|grep -v size|tail -6`"
        echo -e "\e[1;33mCompaction highest ms:\e[0m\n`cat $etcd_directory/pods/$i/etcd/etcd/logs/current.log|grep "compaction"| grep -v downgrade| grep -E "[0-9]+(.[0-9]+)ms"|grep -o '[^,]*$'| cut -d":" -f2|grep -oP '"\K[^"]+'|sort|grep -v size|tail -6`"
