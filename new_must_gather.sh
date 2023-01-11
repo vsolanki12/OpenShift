@@ -136,21 +136,27 @@ if [ $# == 1 ]
    #omg get nodes
    #echo "==========================================================================================================================================================="$'\n\n'
    echo -e "\n\e[1;41mCluster Operator which are in PROGRESSING/DEGRADED state\e[0m\n************************************************************************"
-   omg get co | awk '$4=="True"||$5=="True"'
-   omg get co | awk '$4=="True"||$5=="True"' | awk '{print $1}' > $HOME/Failed_ClusterOperator_NAME.txt
-   echo -n -e "$BLUE""Do you want to list all the Error messages[Yes/NO]:""$NONE"
-   read CO_ERROR
-   if [ $CO_ERROR == "Yes" ] || [ $CO_ERROR == "YES" ] || [ $CO_ERROR == "yes" ] || [ $CO_ERROR == "y" ]
+   omg get co | awk '$3=="False"||$4=="True"||$5=="True"'
+   omg get co | awk '$3=="False"||$4=="True"||$5=="True"' | awk '{print $1}' > $HOME/Failed_ClusterOperator_NAME.txt
+   COUNT_CO=`cat $HOME/Failed_ClusterOperator_NAME.txt|wc -l`
+   if [ $COUNT_CO -ge 1 ]
     then
-     echo -e "\n\e[1;44mCluster Operator error messages from YAML file\e[0m"
-     echo "************************************************************************"
-     for i in `omg get co | awk '$4=="True"||$5=="True"' | awk '{print $1}'`
-      do
-       echo $i
-       echo "**********************************************************************"
-       omg get co $i -ojson|jq -r '.status.conditions[]| select(.message != "All is well") | .message'
-       echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"$'\n'
-     done
+     echo -n -e "$BLUE""Do you want to list all the Error messages[Yes/NO]:""$NONE"
+     read CO_ERROR
+     if [ $CO_ERROR == "Yes" ] || [ $CO_ERROR == "YES" ] || [ $CO_ERROR == "yes" ] || [ $CO_ERROR == "y" ]
+      then
+       echo -e "\n\e[1;44mCluster Operator error messages from YAML file\e[0m"
+       echo "************************************************************************"
+       for i in `omg get co | awk '$4=="True"||$5=="True"' | awk '{print $1}'`
+        do
+         echo $i
+         echo "**********************************************************************"
+         omg get co $i -ojson|jq -r '.status.conditions[]| select(.message != "All is well") | .message'
+         echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"$'\n'
+       done
+     else
+      break
+     fi
    else
     break
    fi
