@@ -147,7 +147,7 @@ if [ $# == 1 ]
       then
        echo -e "\n\e[1;44mCluster Operator error messages from YAML file\e[0m"
        echo "************************************************************************"
-       for i in `omg get co | awk '$4=="True"||$5=="True"' | awk '{print $1}'`
+       for i in `omg get co | awk '$3=="False"||$4=="True"||$5=="True"' | awk '{print $1}'`
         do
          echo $i
          echo "**********************************************************************"
