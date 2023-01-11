@@ -63,7 +63,7 @@ if [ $# == 1 ]
    echo "*************************************************************************"
    echo -n -e "$BLUE""Do you want to list all the nodes[Yes/NO]:""$NONE"
    read REV_INPUT
-   if [ $REV_INPUT == "Yes" ] || [ $REV_INPUT == "YES" ] || [ $REV_INPUT == "yes" ]
+   if [ $REV_INPUT == "Yes" ] || [ $REV_INPUT == "YES" ] || [ $REV_INPUT == "yes" ] || [ $REV_INPUT == "y" ]
     then 
      echo -e "\n\e[1;44mControl plane pod revisions\e[0m"
      echo "************************************************************************"
@@ -89,7 +89,7 @@ if [ $# == 1 ]
    echo "*************************************************************************"
    echo -n -e "$BLUE""Do you want to list all the nodes[Yes/NO]:""$NONE"
    read NODE_INPUT
-   if [ $NODE_INPUT == "Yes" ] || [ $NODE_INPUT == "YES" ] || [ $NODE_INPUT == "yes" ]
+   if [ $NODE_INPUT == "Yes" ] || [ $NODE_INPUT == "YES" ] || [ $NODE_INPUT == "yes" ] || [ $NODE_INPUT == "y" ]
     then
      omg get nodes
    else
@@ -100,7 +100,7 @@ if [ $# == 1 ]
    echo "*************************************************************************"
    echo -n -e "$BLUE""Do you want to list all the nodes[Yes/NO]:""$NONE"
    read ANNOT_INPUT
-   if [ $ANNOT_INPUT == "Yes" ] || [ $ANNOT_INPUT == "YES" ] || [ $ANNOT_INPUT == "yes" ]
+   if [ $ANNOT_INPUT == "Yes" ] || [ $ANNOT_INPUT == "YES" ] || [ $ANNOT_INPUT == "yes" ] || [ $ANNOT_INPUT == "y" ]
     then
      echo -e "\nAnnotations output file\n*******************************************************************************" > $HOME/$CASE_ID/Annotations_file.txt
      for i in `ls $CL_SCOPE_CHECK_DIR/core/nodes/*.yaml`
@@ -138,6 +138,22 @@ if [ $# == 1 ]
    echo -e "\n\e[1;41mCluster Operator which are in PROGRESSING/DEGRADED state\e[0m\n************************************************************************"
    omg get co | awk '$4=="True"||$5=="True"'
    omg get co | awk '$4=="True"||$5=="True"' | awk '{print $1}' > $HOME/Failed_ClusterOperator_NAME.txt
+   echo -n -e "$BLUE""Do you want to list all the Error messages[Yes/NO]:""$NONE"
+   read CO_ERROR
+   if [ $CO_ERROR == "Yes" ] || [ $CO_ERROR == "YES" ] || [ $CO_ERROR == "yes" ] || [ $CO_ERROR == "y" ]
+    then
+     echo -e "\n\e[1;44mCluster Operator error messages from YAML file\e[0m"
+     echo "************************************************************************"
+     for i in `omg get co | awk '$4=="True"||$5=="True"' | awk '{print $1}'`
+      do
+       echo $i
+       echo "**********************************************************************"
+       omg get co $i -ojson|jq -r '.status.conditions[]| select(.message != "All is well") | .message'
+       echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"$'\n'
+     done
+   else
+    break
+   fi
    echo "==========================================================================================================================================================="$'\n\n'
    Degraded_CO=`cat $HOME/Failed_ClusterOperator_NAME.txt|wc -l`
    if [ $Degraded_CO -gt 0 ]
@@ -252,7 +268,7 @@ if [ $# == 1 ]
    echo -e "$YELLOW""Pod Count in All Default NameSpaces:""$NONE"`omg get pods -A| grep -v NAMESPACE | awk '{ns[$1]++}END{for (i in ns) print ns[i]}'|awk '{ sum += $1 } END { print sum }'`
    echo -n  -e "$RED""Do You want to check NameSpace Wise pod count [Yes/No]:""$NONE"
    read POD_COUNT
-   if [ $POD_COUNT == "Yes" ] || [ $POD_COUNT == "YES" ] || [ $POD_COUNT == "yes" ]
+   if [ $POD_COUNT == "Yes" ] || [ $POD_COUNT == "YES" ] || [ $POD_COUNT == "yes" ] || [ $POD_COUNT == "y" ]
     then
      echo -e "\n\e[1;42mPod Count NameSpace wise\e[0m\n************************************************************************"
     #for i in `omg get nodes | egrep -v 'NAME' |awk '{print $1}'`; do echo "$i:`omg get pod -A -owide | grep $i|wc -l`"; done
@@ -263,7 +279,7 @@ if [ $# == 1 ]
    echo "==========================================================================================================================================================="$'\n\n'
    echo -n  -e "$RED""Do You want to check Node Wise pod count [Yes/No]:""$NONE"
    read POD_COUNT
-   if [ $POD_COUNT == "Yes" ] || [ $POD_COUNT == "YES" ] || [ $POD_COUNT == "yes" ]
+   if [ $POD_COUNT == "Yes" ] || [ $POD_COUNT == "YES" ] || [ $POD_COUNT == "yes" ] || [ $POD_COUNT == "y" ]
     then
      echo -e "\n\e[1;42mPod Count NameSpace wise\e[0m\n************************************************************************"
      omg get pods -A -owide|awk '{nodename[$8]++}END{for (i in nodename) print i,nodename[i]}'
@@ -278,7 +294,7 @@ if [ $# == 1 ]
    echo -e "$YELLOW""Total Number of Secrets in all NameSpaces""$NONE":`omg get secrets -A| grep -v NAMESPACE | awk '{ns[$1]++}END{for (i in ns) print ns[i]}'|awk '{ sum += $1 } END { print sum }'`
    echo -n  -e "$RED""Do You want to check Secrets per NameSapce [Yes/No]:""$NONE"
    read SECRET_COUNT
-   if [ $SECRET_COUNT == "Yes" ] || [ $SECRET_COUNT == "YES" ] || [ $SECRET_COUNT == "yes" ]
+   if [ $SECRET_COUNT == "Yes" ] || [ $SECRET_COUNT == "YES" ] || [ $SECRET_COUNT == "yes" ] || [ $SECRET_COUNT == "y" ]
     then
      omg get secrets -A | awk '{ns[$1]++}END{for (i in ns) print i,ns[i]}'
    else
@@ -289,7 +305,7 @@ if [ $# == 1 ]
    echo -e "$YELLOW""Total Number of Configmaps in all NameSpaces""$NONE":`omg get configmaps -A | awk '{ns[$1]++}END{for (i in ns) print ns[i]}'|awk '{ sum += $1 } END { print sum }'`
    echo -n  -e "$RED""Do You want to check Secrets per NameSapce [Yes/No]:""$NONE"
    read CM_COUNT
-   if [ $CM_COUNT == "Yes" ] || [ $CM_COUNT == "YES" ] || [ $CM_COUNT == "yes" ]
+   if [ $CM_COUNT == "Yes" ] || [ $CM_COUNT == "YES" ] || [ $CM_COUNT == "yes" ] || [ $CM_COUNT == "y" ]
     then
      omg get configmaps -A | awk '{ns[$1]++}END{for (i in ns) print i,ns[i]}'
    else
@@ -357,7 +373,7 @@ if [ $# == 1 ]
    do
    echo -n -e "$RED""Choose [YES/NO]: ""$NONE"
    read OPTION
-   if [ $OPTION == "YES" ] || [ $OPTION == "Yes" ] || [ $OPTION == "yes" ]
+   if [ $OPTION == "YES" ] || [ $OPTION == "Yes" ] || [ $OPTION == "yes" ] || [ $OPTION == "y" ]
     then
      echo -n -e "$YELLOW""Provide the NameSpace name: ""$NONE"
      read NS1
@@ -371,7 +387,7 @@ if [ $# == 1 ]
      echo "Log File Created $HOME/$CASE_ID/$NS1-$POD-$CONTAINER.log"
      echo -e "$YELLOW""You want to check more logs of pod, Select from below Option""$NONE"
      echo "--------------------------------------------------------------------------------"
-   elif [ $OPTION == "NO" ] || [ $OPTION == "No" ] || [ $OPTION == "no" ]
+   elif [ $OPTION == "NO" ] || [ $OPTION == "No" ] || [ $OPTION == "no" ] || [ $OPTION == "n" ]
     then
       echo -e "$RED""You have opted for "NO" to end the troubleshooting of logs""$NONE"
       break
@@ -385,15 +401,15 @@ if [ $# == 1 ]
    do
    echo -n -e "$RED""Choose [YES/NO]: ""$NONE"
    read OPTION
-   if [ $OPTION == "YES" ] || [ $OPTION == "Yes" ] || [ $OPTION == "yes" ] 
+   if [ $OPTION == "YES" ] || [ $OPTION == "Yes" ] || [ $OPTION == "yes" ] || [ $OPTION == "y" ]
     then
      echo -n -e "$RED""You want to see all the EVENTS(YES) or For Particular NameSpace(NO): ""$NONE"
      read EVENT
-     if [ $EVENT == "YES" ] || [ $EVENT == "Yes" ]  || [ $EVENT == "yes" ] 
+     if [ $EVENT == "YES" ] || [ $EVENT == "Yes" ]  || [ $EVENT == "yes" ] || [ $EVENT == "y" ]
       then
        echo -n -e "$RED""You want to see all the EVENTS(YES) or want to grep particular error(NO): ""$NONE"
        read ER1
-       if [ $ER1 == "YES" ] || [ $ER1 == "Yes" ] || [ $ER1 == "yes" ]
+       if [ $ER1 == "YES" ] || [ $ER1 == "Yes" ] || [ $ER1 == "yes" ] || [ $ER1 == "y" ]
         then
          omg get events -A > $HOME/$CASE_ID/All_Events-log
          echo "Event File created $HOME/$CASE_ID/All_Events-log"
@@ -411,7 +427,7 @@ if [ $# == 1 ]
       read NS
       echo -n -e "$RED""You want to go for all Error(YES) or want to grep particular Error(NO): ""$NONE"
       read ERROR
-      if [ $ERROR == "YES" ] || [ $ERROR == "Yes" ] || [ $ERROR == "yes" ]
+      if [ $ERROR == "YES" ] || [ $ERROR == "Yes" ] || [ $ERROR == "yes" ] || [ $ERROR == "y" ]
        then
         omg get events -n $NS > $HOME/$CASE_ID/$NS-Events-log
         echo "Event File created $HOME/$CASE_ID/$NS-Events-log"
@@ -426,7 +442,7 @@ if [ $# == 1 ]
        echo "--------------------------------------------------------------------------------"
       fi
      fi
-     elif [ $OPTION == "NO" ] || [ $OPTION == "No" ] || [ $OPTION == "no" ]
+     elif [ $OPTION == "NO" ] || [ $OPTION == "No" ] || [ $OPTION == "no" ] || [ $OPTION == "n" ]
       then
        echo -e "$RED""You have opted "NO" to end this event check troubleshooting""$NONE"
        break
