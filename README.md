@@ -118,10 +118,10 @@ more than 3s:50
 more than 4s:3
 ~~~
 **Usage of the audit logs** 
+~~~
 sh audit_analysis_log.sh <case_id>
-It will provide some details related to number of calls per namespace/service account/URI Calls/date wise count/ hour wise count
-czcholstc005905.prg-dc.dhl.com top 10 NameSpace audit call
-*****************************************************
+It will provide some details related to number of calls per namespace/service account/URI Calls/date-wise count/hour-wise count
+
  333627 null
   59262 open-cluster-management-agent-addon
   36589 kube-system
