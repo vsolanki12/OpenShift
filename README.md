@@ -131,3 +131,25 @@ It will provide some details related to number of calls per namespace/service ac
   21959 openshift-monitoring
   13606 openshift-console
 ~~~
+**Usage of the pod resource utilization** 
+~~~
+$ sh ~/OpenShift/pod_utilization.sh 03557449
+drwxrwxrwx. 3 yank     yank          58 Jul  8 17:37 0010-03557449_sosreport-toolbox-2023-07-08-pvowfie-master.tar.xz
+drwxrwxrwx. 3 yank     yank          60 Jul  8 17:37 0020-03557449_sosreport-toolbox-6-2023-07-08-jcxfvky-master.tar.xz
+drwxrwxrwx. 3 yank     yank          58 Jul  8 17:37 0030-03557449_sosreport-toolbox-2023-07-08-gvqttuc-master.tar.xz
+Choose the sos-report from the above output:0020-03557449_sosreport-toolbox-6-2023-07-08-jcxfvky-master.tar.xz
+Pod Names those are using high CPU
+*******************************************************
+POD_NAME|CPU%|Memory|Disk
+apiserver-55d979755b-ngqmz|31.90|55.52MB|8.192kB
+ovnkube-node-d76fx|33.95|106.7MB|909.3kB
+etcd|57.86|822.1MB|8.192kB
+kube-apiserver|180.28|2.068GB|245.8kB
+------------------------------------------------------------------------------------
+
+Pod Names those are using high Memory
+*******************************************************
+POD_NAME|CPU%|Memory|Disk
+kube-apiserver|180.28|2.068GB|245.8kB
+------------------------------------------------------------------------------------
+~~~
