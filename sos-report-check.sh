@@ -78,15 +78,14 @@ if [ $# == 1 ]
     
   echo -e "\e[1;43m Checking the OOM Killer Alarm from the SOS report \e[0m"
   echo "-----------------------------------------------------------"$'\n'
-  JOURNAL_DIR=`ls $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/var/log/journal/`
-  OOM_CHECK=`journalctl --file $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/var/log/journal/$JOURNAL_DIR/system.journal|grep -Ei "oom-killer|Out of memory" |wc -l`
+  OOM_CHECK=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager| grep -Ei 'oom-killer|Out of memory|oom-kill' |wc -l`
   if [ $OOM_CHECK -eq 0 ]
    then
     echo -e "\e[01;32m No latest OOM Killer Messages\e[0m"
   else
     echo -e "\e[1;31mTotal OOM Killer logs\e[0m="$OOM_CHECK
-    echo -e "\e[1;31m`journalctl --file $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/var/log/journal/$JOURNAL_DIR/system.journal|grep -Ei "oom-killer|Out of memory"|tail -3`\e[0m"
-    for file in $(ls -1tr $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/var/log/journal/$JOURNAL_DIR/system*.journal); do echo -e "\n$file\n=============================="; journalctl --file $file|grep -Ei "oom-killer|Out of memory"; done > $HOME/$CASE_DIR/OOM_KIller.log
+    echo -e "\e[1;31m`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager| grep -Ei 'oom-killer|Out of memory|oom-kill' |tail -3`\e[0m"
+    cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager| grep -Ei 'oom-killer|Out of memory|oom-kill'  > $HOME/$CASE_DIR/OOM_KIller.log
     echo -e "\e[1;35mLog File Created at $HOME/$CASE_DIR/OOM_KIller.log\e[0m"
   fi
   echo "=========================================================================================================================================================="$'\n'
