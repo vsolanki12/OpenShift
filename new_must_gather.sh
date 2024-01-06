@@ -359,6 +359,8 @@ if [ $# == 1 ]
      echo -e "\e[1;33mtransport is closing messages count:\e[0m `cat $etcd_directory/pods/$i/etcd/etcd/logs/current.log|grep 'transport is closing'|wc -l`"
      echo -e "\e[1;33mcontext deadline exceeded messages count:\e[0m `cat $etcd_directory/pods/$i/etcd/etcd/logs/current.log|grep 'context deadline exceeded'|wc -l`"
      echo -e "\e[1;33mtimed out waiting for read index response messages count:\e[0m `cat $etcd_directory/pods/$i/etcd/etcd/logs/current.log|grep 'timed out waiting for read index response'|wc -l`"
+     echo -e "\e[1;33mcontext canceled messages count:\e[0m `cat $etcd_directory/pods/$i/etcd/etcd/logs/current.log|grep 'context canceled'|wc -l`"
+     echo -e "\e[1;33mwaiting for ReadIndex response took too long messages count:\e[0m `cat $etcd_directory/pods/$i/etcd/etcd/logs/current.log|grep 'waiting for ReadIndex response took too long'|wc -l`"
      echo -e "\e[1;33metcd High Fsync Durations error messages count:\e[0m `cat $etcd_directory/pods/$i/etcd/etcd/logs/current.log|grep 'slow fdatasync'|wc -l`"
      echo -e "\e[1;33metcd Highest Fsync Durations:\e[0m `cat $etcd_directory/pods/$i/etcd/etcd/logs/current.log|grep 'slow fdatasync'|awk -F',' '{print $5}' | awk -F':' '{print $2}'| sort| tail -1`"
      if [[ $CL_VERSION = 4.10 ]] || [[ $CL_VERSION > 4.10 ]]
