@@ -33,9 +33,13 @@ if [ $# == 1 ]
   echo "--------------------------------------------------------------------------"$'\n'
   cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/systemd/systemctl_list-unit-files | grep kdump
   echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"$'\n\n'
-  echo -e "\e[1;43m Checking Memory CPU and Processes \e[0m"
+  echo -e "\e[1;43m Checking Memory CPU Utilization\e[0m"
   echo "===================================================================================="$'\n'
-  xsos -c -m -o -p $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final
+  #xsos -c -m -o -p $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final
+  #echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"$'\n\n'
+  #echo -e "\e[1;43m Checking CPU details from "cpuinfo file" \e[0m"
+  #echo "===================================================================================="$'\n'
+  xsos -com $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final | grep "LoadAvg"
   echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"$'\n\n'
   echo -e "\e[1;43m Checking Memory from "free file" \e[0m"
   echo "===================================================================================="$'\n'
@@ -62,8 +66,8 @@ if [ $# == 1 ]
   echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"$'\n\n'
   echo -e "\e[1;43m Checking the active cgroup tasks \e[0m"
   echo "===================================================================================="$'\n'
-  find $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sys/fs/cgroup/memory -name "*tasks*" | wc -l
-  echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"$'\n\n'
+  echo "Active Tasks from cgroup=`find $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sys/fs/cgroup/memory -name "*tasks*" | wc -l`"
+  echo "===================================================================================="$'\n'
   echo -e "\e[1;43m Checking the File System which are greater than 70% \e[0m"
   echo "-----------------------------------------------------------"$'\n'
   count=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/df | egrep "([70,80,90][0-9]|100)%"|wc -l`
@@ -91,16 +95,60 @@ if [ $# == 1 ]
   echo "=========================================================================================================================================================="$'\n'
   echo -e "\e[1;43m Checking the Kubelet Errors from the SOS report \e[0m"
   echo "-----------------------------------------------------------"$'\n'
+  CERT_CHECK=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "kubelet: Current certificate is expired"|wc -l`
+  if [ $CERT_CHECK -eq 0 ]
+   then
+    echo -e "\e[01;32m No error for Kubelet Current certificate is expired\e[0m"
+  else
+    echo "Kubelet Current certificate is expired=$CERT_CHECK"
+    echo "---------------------------------------------------------------"
+    echo -e "\e[01;31m`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "kubelet: Current certificate is expired"|tail -3`\e[0m"
+    cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "kubelet: Current certificate is expired" > $HOME/$CASE_DIR/Kubelet_Certificate_Expired.log
+  fi
+  echo "=========================================================================================================================================================="$'\n'
+  NO_VALID_CERT=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "No valid client certificate is found but the server is not responsive"|wc -l`
+  if [ $NO_VALID_CERT -eq 0 ]
+   then
+    echo -e "\e[01;32m No error for No valid client certificate is found but the server is not responsive\e[0m"
+  else
+    echo "No valid client certificate is found but the server is not responsive=$NO_VALID_CERT"
+    echo "---------------------------------------------------------------"
+    echo -e "\e[01;31m`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "No valid client certificate is found but the server is not responsive"|tail -3`\e[0m"
+    cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "No valid client certificate is found but the server is not responsive" > $HOME/$CASE_DIR/No_Valid_certificate.log
+  fi
+  echo "=========================================================================================================================================================="$'\n'
+  CERT_X509=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "x509 certificate signed by unknown authority"|wc -l`
+  if [ $CERT_X509 -eq 0 ]
+   then
+    echo -e "\e[01;32m No error of x509 certificate signed by unknown authority \e[0m"
+  else
+    echo "x509 certificate signed by unknown authority"
+    echo "---------------------------------------------------------------"
+    echo -e "\e[01;31m`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "x509 certificate signed by unknown authority"|tail -3`\e[0m"
+    ccat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "x509 certificate signed by unknown authority" > $HOME/$CASE_DIR/x509_certificate_error.log
+  fi
+  echo "=========================================================================================================================================================="$'\n'
+  NO_ROUTE=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "api-int" | grep "connect: no route to host"|wc -l`
+  if [ $NO_ROUTE -eq 0 ]
+   then
+    echo -e "\e[01;32m No error of Failed to Connect API-INT URL from node\e[0m" 
+  else
+    echo "Failed to Connect API-INT URL from node"
+    echo "---------------------------------------------------------------"
+    echo -e "\e[01;31m`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "api-int" | grep "connect: no route to host"|tail -3`\e[0m"
+    cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "api-int" | grep "connect: no route to host" > $HOME/$CASE_DIR/Failed_to_Connect_API-INT.log
+  fi
+  echo "=========================================================================================================================================================="$'\n'
   HST_NAME=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/hostname`
-  HST_NAME_NOT_FOUND=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep 'node "'$HST_NAME'" not found'|wc -l`
+  HST_NAME_NOT_FOUND=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "node"| grep "not found"|grep $HST_NAME|wc -l`
   if [ $HST_NAME_NOT_FOUND -eq 0 ]
    then
     echo -e "\e[01;32m No Error of node $HST_NAME not found\e[0m"
   else
     echo "node $HST_NAME not found error=$HST_NAME_NOT_FOUND"
     echo "---------------------------------------------------------------"
-    echo -e "\e[01;31m`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep 'node "'$HST_NAME'" not found'|tail -3`\e[0m"
-    cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep 'node "'$HST_NAME'" not found' > $HOME/$CASE_DIR/Node_Not_Found_Error.log
+    echo -e "\e[01;31m`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "node "| grep "not found"|grep $HST_NAME|tail -3`\e[0m"
+    cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "node"| grep "not found"|grep $HST_NAME > $HOME/$CASE_DIR/Node_Not_Found_Error.log
     echo -e "\e[01;35mLog File Created at $HOME/$CASE_DIR/Node_Not_Found_Error.log\e[0m"
   fi
   echo "=========================================================================================================================================================="$'\n'
@@ -244,17 +292,17 @@ if [ $# == 1 ]
   echo "=========================================================================================================================================================="$'\n'
   echo -e "\e[1;43m Checking the Reboot of node from the journalctl_--no-pager logs \e[0m"
   echo "---------------------------------------------------------------------------------------"$'\n'
-  REBOOT_COUNT=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager| grep '\-- Reboot\b'|wc -l`
-  if [ $REBOOT_COUNT -eq 0 ]
+  REBOOT_COUNT=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager| egrep '\-- Reboot\b|\-- Boot\b'|wc -l`
+  if [ $REBOOT_COUNT -eq 0 ] 
    then
     echo -e "\e[01;32m No Reboot error found in the logs\e[0m"
   else
    echo "Total Reboot Count=$REBOOT_COUNT"
-   echo -e "\e[01;31m`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager| grep '\-- Reboot\b'|tail -3`\e[0m"
+   echo -e "\e[01;31m`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager| egrep '\-- Reboot\b|\-- Boot\b'|tail -3`\e[0m"
    echo "*******************************************************************************************"
    echo "Last reboot details(For more details check $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager file)"
    echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-   LAST_REBOOT_MORE=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager| grep -n '\-- Reboot\b'|tail -1|awk -F':' '{print $1}'`
+   LAST_REBOOT_MORE=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager| egrep -n '\-- Reboot\b|\-- Boot\b'|tail -1|awk -F':' '{print $1}'`
    LAST_LINE=` expr $LAST_REBOOT_MORE + 10 `
    echo -e "\e[01;31m`sed -n "$LAST_REBOOT_MORE,${LAST_LINE} p" $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager`\e[0m"
   fi
