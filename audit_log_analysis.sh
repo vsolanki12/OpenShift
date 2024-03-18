@@ -34,7 +34,7 @@ if [ $# == 1 ]
      AUDIT_LOG_FILE_NAME=`echo $i | sed 's/-$//g'`
      echo "$AUDIT_LOG_FILE_NAME top 10 NameSpace audit call"
      echo "*****************************************************"
-     zcat $HOME/$CASE_ID/$CHOOSED_MUST_GATHER/$MUST_GATHER_File/$QUAY_PATH/audit_logs/kube-apiserver/$AUDIT_LOG_FILE_NAME-audit* |jq .objectRef.namespace -r | sort | uniq -c | sort -nr | head
+     zcat $HOME/$CASE_ID/$CHOOSED_MUST_GATHER/$MUST_GATHER_File/$QUAY_PATH/audit_logs/kube-apiserver/$AUDIT_LOG_FILE_NAME-audit* |jq 'select (.objectRef.namespace != null)|.objectRef.namespace -r' | sort | uniq -c | sort -nr | head
      echo "================================================================================================================================================================"
      echo "$AUDIT_LOG_FILE_NAME top 10 Users audit call"
      echo "*****************************************************"
