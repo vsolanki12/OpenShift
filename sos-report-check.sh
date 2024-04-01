@@ -117,15 +117,15 @@ if [ $# == 1 ]
     cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "No valid client certificate is found but the server is not responsive" > $HOME/$CASE_DIR/No_Valid_certificate.log
   fi
   echo "=========================================================================================================================================================="$'\n'
-  CERT_X509=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "x509 certificate signed by unknown authority"|wc -l`
+  CERT_X509=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "x509: certificate signed by unknown authority"|wc -l`
   if [ $CERT_X509 -eq 0 ]
    then
     echo -e "\e[01;32m No error of x509 certificate signed by unknown authority \e[0m"
   else
     echo "x509 certificate signed by unknown authority"
     echo "---------------------------------------------------------------"
-    echo -e "\e[01;31m`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "x509 certificate signed by unknown authority"|tail -3`\e[0m"
-    ccat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "x509 certificate signed by unknown authority" > $HOME/$CASE_DIR/x509_certificate_error.log
+    echo -e "\e[01;31m`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "x509: certificate signed by unknown authority"|tail -3`\e[0m"
+    ccat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "x509: certificate signed by unknown authority" > $HOME/$CASE_DIR/x509_certificate_error.log
   fi
   echo "=========================================================================================================================================================="$'\n'
   NO_ROUTE=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "api-int" | grep "connect: no route to host"|wc -l`
