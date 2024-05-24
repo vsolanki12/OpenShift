@@ -33,6 +33,13 @@ if [ $# == 1 ]
    omg use $HOME/$CASE_ID/$MUST_GATHER > $HOME/must-gather-used.txt
    echo -e "\n\e[1;42mCluster Infrastructure Check\e[0m\n*********************************************"
    echo -e "$YELLOW""Platform Type:`omg get infrastructure/cluster -o json | jq '.spec.platformSpec.type'`""$NONE"
+   Install_Count=`omg get cm -n openshift-config | grep -w openshift-install | grep -v openshift-install-manifests| awk '{print $1}'|wc -l`
+   if [ $Install_Count == 1 ]
+    then
+      echo -e "$YELLOW""Installation Type: IPI""$NONE"
+    else
+      echo -e "$YELLOW""Installation Type: UPI""$NONE"
+   fi
    echo -e "$YELLOW""Cluster ID:""$NONE"`omg get clusterversion -o json | jq '.spec.clusterID'`
    echo -e "$YELLOW""Cluster Channel:""$NONE"`omg get clusterversion -ojson | jq '.spec.channel'`
    echo "==========================================================================================================================================================="$'\n\n'
