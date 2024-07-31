@@ -42,5 +42,5 @@ if [ $# == 1 ]
      echo "------------------------------------------------------------------------------------"
    fi
 else
-  echo -e "\e[1;31mKindly provide the case along side with the script name. Example ./sos-report-check.sh case_number\e[0m"
+  echo -e "\e[1;31mKindly provide the case along side with the script name. Example ./pod_utilization.sh case_number\e[0m"
 fi
