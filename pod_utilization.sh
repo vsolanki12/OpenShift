@@ -15,7 +15,7 @@ if [ $# == 1 ]
      echo "Pod Names those are using high CPU"
      echo "*******************************************************" 
      printf "%10s %15s %43s %22s %18s %17s\n" "CONTAINER" "NAME" "CPU%" "Memory" "Disk" "INODE"
-     cat $HOME/$CASE_DIR/pod_utilization.txt |sed 's/::/|/' | awk '{ if ( $3 >= 30 ) print $0 }'
+     cat $HOME/$CASE_DIR/pod_utilization.txt |sed 's/::/|/' | awk '{ if ( $3 >= 30 ) print $0 }' | grep -v NAME
      echo "------------------------------------------------------------------------------------"
      echo "Pod Names those are using high Memory"
      echo "*******************************************************"
