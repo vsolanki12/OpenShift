@@ -12,12 +12,12 @@ if [ $# == 1 ]
   CHECK_VERSION=`cat $HOME/$CASE_DIR/pod_utilization.txt | head -1 | awk '{print $2}'`
   if [ $CHECK_VERSION=="NAME" ]
    then
-     echo "Pod Names those are using high CPU"
+     echo "Pod Names those are using more than 30% CPU"
      echo "*******************************************************" 
      printf "%10s %15s %43s %22s %18s %17s\n" "CONTAINER" "NAME" "CPU%" "Memory" "Disk" "INODE"
      cat $HOME/$CASE_DIR/pod_utilization.txt |sed 's/::/|/' | awk '{ if ( $3 >= 30 ) print $0 }' | grep -v NAME
      echo "------------------------------------------------------------------------------------"
-     echo "Pod Names those are using high Memory"
+     echo "Pod Names those are using high Memory in GB"
      echo "*******************************************************"
      printf "%10s %15s %43s %22s %18s %17s\n" "CONTAINER" "NAME" "CPU%" "Memory" "Disk" "INODE"
      cat $HOME/$CASE_DIR/pod_utilization.txt |sed 's/::/|/' | awk '{ if ( $4 >= 1 ) print $0 }' | grep -i GB
