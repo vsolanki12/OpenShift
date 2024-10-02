@@ -53,21 +53,19 @@ if [ $# == 1 ]
   PER_CPU=$(gawk '/^Percpu/{printf "%.2f\n", $2/1024/1024}' "$HOME/$CASE_DIR/$SOS_DIR/$SOS_Final"/proc/meminfo)
   USED_MEM=`echo "$TOT_MEM - $FREE_MEM" |bc`
   USED_MEM_A=`echo "$TOT_MEM - $AVAIL_MEM"|bc`
-  echo "Total Memory="$TOT_MEM"GB"
-  echo "Used Memory as per free Memory="$USED_MEM"GB"
-  echo "Free Memory="$FREE_MEM"GB"
-  echo "Used Memory as per available Memory="$USED_MEM_A"GB"
-  echo "Available Meory="$AVAIL_MEM"GB"
-  echo "PerCpu Memory="$PER_CPU"GB"
+  echo "Total Memory="$TOT_MEM"GiB"
+  echo "Used Memory as per free Memory="$USED_MEM"GiB"
+  echo "Free Memory="$FREE_MEM"GiB"
+  echo "Used Memory as per available Memory="$USED_MEM_A"GiB"
+  echo "Available Meory="$AVAIL_MEM"GiB"
+  echo "PerCpu Memory="$PER_CPU"GiB"
   echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"$'\n\n'
-  echo -e "\e[1;43m Checking cgroup memory counter from "cgroup file" \e[0m"
-  echo "===================================================================================="$'\n'
-  cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/proc/cgroups | grep -E "name|memory"
+  echo "Total memory consumption by prcoesses:`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/process/ps_auxwwwm | awk '{ sum+=$6} END {print sum/1024/1024}'` GiB"
   echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"$'\n\n'
-  echo -e "\e[1;43m Checking the active cgroup tasks \e[0m"
+  echo "Top 10 Process of memory consumption"
   echo "===================================================================================="$'\n'
-  echo "Active Tasks from cgroup=`find $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sys/fs/cgroup/memory -name "*tasks*" | wc -l`"
-  echo "===================================================================================="$'\n'
+  awk '{m[$11]+=$6}END{for(item in m){printf "%s %s GiB\n",item,m[item]/1024/1024}}'  $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/process/ps_auxwwwm | sort -nrk2 | head | column -t
+  echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"$'\n\n'
   echo -e "\e[1;43m Checking the File System which are greater than 70% \e[0m"
   echo "-----------------------------------------------------------"$'\n'
   count=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/df | egrep "([70,80,90][0-9]|100)%"|wc -l`
@@ -82,14 +80,14 @@ if [ $# == 1 ]
     
   echo -e "\e[1;43m Checking the OOM Killer Alarm from the SOS report \e[0m"
   echo "-----------------------------------------------------------"$'\n'
-  OOM_CHECK=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager| grep -Ei 'oom-killer|Out of memory|oom-kill' |wc -l`
+  OOM_CHECK=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager*| grep -Ei 'oom-killer|Out of memory|oom-kill' |wc -l`
   if [ $OOM_CHECK -eq 0 ]
    then
     echo -e "\e[01;32m No latest OOM Killer Messages\e[0m"
   else
     echo -e "\e[1;31mTotal OOM Killer logs\e[0m="$OOM_CHECK
-    echo -e "\e[1;31m`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager| grep -Ei 'oom-killer|Out of memory|oom-kill' |tail -3`\e[0m"
-    cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager| grep -Ei 'oom-killer|Out of memory|oom-kill'  > $HOME/$CASE_DIR/OOM_KIller.log
+    echo -e "\e[1;31m`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager*| grep -Ei 'oom-killer|Out of memory|oom-kill' |tail -3`\e[0m"
+    cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager*| grep -Ei 'oom-killer|Out of memory|oom-kill'  > $HOME/$CASE_DIR/OOM_KIller.log
     echo -e "\e[1;35mLog File Created at $HOME/$CASE_DIR/OOM_KIller.log\e[0m"
   fi
   echo "=========================================================================================================================================================="$'\n'
@@ -120,23 +118,23 @@ if [ $# == 1 ]
   CERT_X509=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "x509: certificate signed by unknown authority"|wc -l`
   if [ $CERT_X509 -eq 0 ]
    then
-    echo -e "\e[01;32m No error of x509 certificate signed by unknown authority \e[0m"
+    echo -e "\e[01;32m No error of x509: certificate signed by unknown authority \e[0m"
   else
     echo "x509 certificate signed by unknown authority"
     echo "---------------------------------------------------------------"
     echo -e "\e[01;31m`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "x509: certificate signed by unknown authority"|tail -3`\e[0m"
-    ccat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "x509: certificate signed by unknown authority" > $HOME/$CASE_DIR/x509_certificate_error.log
+    cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "x509: certificate signed by unknown authority" > $HOME/$CASE_DIR/x509_certificate_error.log
   fi
   echo "=========================================================================================================================================================="$'\n'
-  NO_ROUTE=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "api-int" | grep "connect: no route to host"|wc -l`
+  NO_ROUTE=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "api-int" | egrep 'connection refused|no route to host|i/o timeout|request canceled while waiting for connection'|wc -l`
   if [ $NO_ROUTE -eq 0 ]
    then
     echo -e "\e[01;32m No error of Failed to Connect API-INT URL from node\e[0m" 
   else
     echo "Failed to Connect API-INT URL from node"
     echo "---------------------------------------------------------------"
-    echo -e "\e[01;31m`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "api-int" | grep "connect: no route to host"|tail -3`\e[0m"
-    cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "api-int" | grep "connect: no route to host" > $HOME/$CASE_DIR/Failed_to_Connect_API-INT.log
+    echo -e "\e[01;31m`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "api-int" | egrep 'connection refused|no route to host|i/o timeout|request canceled while waiting for connection'|tail -3`\e[0m"
+    cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "api-int" | egrep 'connection refused|no route to host|i/o timeout|request canceled while waiting for connection' > $HOME/$CASE_DIR/Failed_to_Connect_API-INT.log
   fi
   echo "=========================================================================================================================================================="$'\n'
   HST_NAME=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/hostname`
@@ -267,59 +265,59 @@ if [ $# == 1 ]
     echo -e "\e[01;35mLog File Created at $HOME/$CASE_DIR/Name_Reserved_Error.log\e[0m"
    fi
    echo "=========================================================================================================================================================="$'\n'
-  CRIO_PANIC=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager|grep -i "panic: close of closed channel"|wc -l`
+  CRIO_PANIC=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager*|grep -i "panic: close of closed channel"|wc -l`
   if [ $CRIO_PANIC -eq 0 ]
    then
     echo -e "\e[01;32m No Error of CRI-O Panic\e[0m"
   else
    echo "CRI-O Panic Error=$CRIO_PANIC"
    echo "-----------------------------"
-   echo -e "\e[01;31m`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager|grep -i "panic: close of closed channel"|tail -3`\e[0m"
-   cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager|grep -i "panic: close of closed channel" > $HOME/$CASE_DIR/Crio_Panic.log
+   echo -e "\e[01;31m`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager*|grep -i "panic: close of closed channel"|tail -3`\e[0m"
+   cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager*|grep -i "panic: close of closed channel" > $HOME/$CASE_DIR/Crio_Panic.log
    echo -e "\e[01;35mLog File Created at $HOME/$CASE_DIR/Crio_Panic.log\e[0m"
   fi
   echo "=========================================================================================================================================================="$'\n'
-  SOFT_LOOKUP_ERROR=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager|grep -i "soft lockup" |wc -l`
-  if [ $SOFT_LOOKUP_ERROR -eq 0 ]
+  SOFT_LOCKUP_ERROR=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager*|grep -i "soft lockup" |wc -l`
+  if [ $SOFT_LOCKUP_ERROR -eq 0 ]
    then
     echo -e "\e[01;32m No Error of Kernel hung soft lockup\e[0m"
   else
-   echo "Soft Lookup Error=$SOFT_LOOKUP_ERROR" 
+   echo "Soft Lockup Error=$SOFT_LOCKUP_ERROR" 
    echo "-----------------------------"
-   echo -e "\e[01;31m`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager|grep -i "soft lockup"|tail -3`\e[0m"
-   cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager|grep -i "soft lockup" > $HOME/$CASE_DIR/soft_lookup.log
+   echo -e "\e[01;31m`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager*|grep -i "soft lockup"|tail -3`\e[0m"
+   cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager*|grep -i "soft lockup" > $HOME/$CASE_DIR/soft_lockup.log
   fi
   echo "=========================================================================================================================================================="$'\n'
   echo -e "\e[1;43m Checking the Reboot of node from the journalctl_--no-pager logs \e[0m"
   echo "---------------------------------------------------------------------------------------"$'\n'
-  REBOOT_COUNT=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager| egrep '\-- Reboot\b|\-- Boot\b'|wc -l`
+  REBOOT_COUNT=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager*| egrep '\-- Reboot\b|\-- Boot\b'|wc -l`
   if [ $REBOOT_COUNT -eq 0 ] 
    then
     echo -e "\e[01;32m No Reboot error found in the logs\e[0m"
   else
    echo "Total Reboot Count=$REBOOT_COUNT"
-   echo -e "\e[01;31m`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager| egrep '\-- Reboot\b|\-- Boot\b'|tail -3`\e[0m"
+   echo -e "\e[01;31m`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager*| egrep '\-- Reboot\b|\-- Boot\b'|tail -3`\e[0m"
    echo "*******************************************************************************************"
    echo "Last reboot details(For more details check $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager file)"
    echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-   LAST_REBOOT_MORE=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager| egrep -n '\-- Reboot\b|\-- Boot\b'|tail -1|awk -F':' '{print $1}'`
+   LAST_REBOOT_MORE=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager*| egrep -n '\-- Reboot\b|\-- Boot\b'|tail -1|awk -F':' '{print $1}'`
    LAST_LINE=` expr $LAST_REBOOT_MORE + 10 `
-   echo -e "\e[01;31m`sed -n "$LAST_REBOOT_MORE,${LAST_LINE} p" $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager`\e[0m"
+   echo -e "\e[01;31m`sed -n "$LAST_REBOOT_MORE,${LAST_LINE} p" $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager*`\e[0m"
   fi
   echo "=========================================================================================================================================================="$'\n'
   echo -e "\e[1;43m Finding the Last Reboot of node from the journalctl_--no-pager logs was Intentional \e[0m"
   echo "--------------------------------------------------------------------------------------------------"$'\n'
-  INTENT_REBOOT=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager| grep "Starting Reboot..."|wc -l`
+  INTENT_REBOOT=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager*| grep "Starting Reboot..."|wc -l`
   if [ $INTENT_REBOOT -eq 0 ]
    then
     echo -e "\e[01;32m No Intentional Reboot error found in the logs\e[0m"
   else
    echo "Intent Reboot Count=$INTENT_REBOOT"
-   CHECK_REBOOT_LINE=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager| grep -n "Starting Reboot"|tail -1|awk -F':' '{print $1}'`
+   CHECK_REBOOT_LINE=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager*| grep -n "Starting Reboot"|tail -1|awk -F':' '{print $1}'`
    LAST_REBOOT_LINE=` expr $CHECK_REBOOT_LINE + 12 `
    echo "This is the last reboot given intentionaly"
    echo "++++++++++++++++++++++++++++++++++++++++++++++++++"
-   echo -e "\e[01;31m`sed -n "$CHECK_REBOOT_LINE,${LAST_REBOOT_LINE}p" $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager`\e[0m"
+   echo -e "\e[01;31m`sed -n "$CHECK_REBOOT_LINE,${LAST_REBOOT_LINE}p" $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager*`\e[0m"
   fi
   echo "=========================================================================================================================================================="$'\n'
   echo -e "\e[01;34mYou can check the dmesg file in case reboot(path of file is `find $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/ -type f -name "dmesg*"`)\e[0m"
