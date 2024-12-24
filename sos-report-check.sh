@@ -91,6 +91,21 @@ if [ $# == 1 ]
     echo -e "\e[1;35mLog File Created at $HOME/$CASE_DIR/OOM_KIller.log\e[0m"
   fi
   echo "=========================================================================================================================================================="$'\n'
+    ######## Checking the defunct processes from the SOS report ####################
+
+  echo -e "\e[1;43m Checking the defunct processes from the SOS report \e[0m"
+  echo "-----------------------------------------------------------"$'\n'
+  DEF_CHECK=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager*| grep -Ei 'Found defunct process' |wc -l`
+  if [ $DEF_CHECK -eq 0 ]
+   then
+    echo -e "\e[01;32m No defunct processes found Messages\e[0m"
+  else
+    echo -e "\e[1;31mTotal defunct process logs\e[0m="$DEF_CHECK
+    echo -e "\e[1;31m`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager*| grep -Ei 'Found defunct process' |tail -3`\e[0m"
+    cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/logs/journalctl_--no-pager* | grep -Ei 'Found defunct process'  > $HOME/$CASE_DIR/DEFUNCT_processes.log
+    echo -e "\e[1;35mLog File Created at $HOME/$CASE_DIR/DEFUNCT_processes.log\e[0m"
+  fi
+  echo "=========================================================================================================================================================="$'\n'
   echo -e "\e[1;43m Checking the Kubelet Errors from the SOS report \e[0m"
   echo "-----------------------------------------------------------"$'\n'
   CERT_CHECK=`cat $HOME/$CASE_DIR/$SOS_DIR/$SOS_Final/sos_commands/openshift/journalctl_--no-pager_--unit_kubelet | grep "kubelet: Current certificate is expired"|wc -l`
